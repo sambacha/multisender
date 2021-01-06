@@ -100,38 +100,42 @@ class TokenStore {
 
   @action
   async getCurrentFee(){
-    try {
-      this.web3Store.getWeb3Promise.then(async () => {
-        // const web3 = this.web3Store.web3;
-        // const multisender = new web3.eth.Contract(StormMultiSenderABI, this.proxyMultiSenderAddress);
-        // const currentFee = await multisender.methods.currentFee(this.web3Store.defaultAccount).call();
-        const currentFee = "10000000000000000"; // 0.01 ETH
-        this.currentFee = Web3Utils.fromWei(currentFee)
-        return this.currentFee
-      })
-    }
-    catch(e){
-      console.error('getCurrentFee',e)
-    }
+    const currentFee = "10000000000000000"; // 0.01 ETH
+    this.currentFee = Web3Utils.fromWei(currentFee)
+    return this.currentFee
+    // try {
+    //   this.web3Store.getWeb3Promise().then(async () => {
+    //     const web3 = this.web3Store.web3;
+    //     const multisender = new web3.eth.Contract(StormMultiSenderABI, this.proxyMultiSenderAddress);
+    //     const currentFee = await multisender.methods.currentFee(this.web3Store.defaultAccount).call();
+    //     this.currentFee = Web3Utils.fromWei(currentFee)
+    //     return this.currentFee
+    //   })
+    // }
+    // catch(e){
+    //   console.error('getCurrentFee',e)
+    // }
   }
 
   async getArrayLimit(){
-    try {
-      await this.web3Store.getWeb3Promise.then(async () => {
-        // const web3 = this.web3Store.web3;
-        // const multisender = new web3.eth.Contract(StormMultiSenderABI, this.proxyMultiSenderAddress);
-        this.arrayLimit = 200; //await multisender.methods.arrayLimit().call();
-        return this.arrayLimit
-      })
-    }
-    catch(e){
-      console.error('GetArrayLimit', e)
-    }
+    this.arrayLimit = 200;
+    return this.arrayLimit
+    // try {
+    //   await this.web3Store.getWeb3Promise().then(async () => {
+    //     const web3 = this.web3Store.web3;
+    //     const multisender = new web3.eth.Contract(StormMultiSenderABI, this.proxyMultiSenderAddress);
+    //     await multisender.methods.arrayLimit().call();
+    //     return this.arrayLimit
+    //   })
+    // }
+    // catch(e){
+    //   console.error('GetArrayLimit', e)
+    // }
   }
 
   @action
   async setTokenAddress(tokenAddress) {
-    await this.web3Store.getWeb3Promise.then(async () => {
+    await this.web3Store.getWeb3Promise().then(async () => {
       if(Web3Utils.isAddress(this.web3Store.defaultAccount) && tokenAddress !== "0x000000000000000000000000000000000000bEEF"){
         this.tokenAddress = tokenAddress;
         await this.getDecimals(tokenAddress)

@@ -11,11 +11,11 @@ class Web3Store {
   @observable explorerUrl = '';
   @observable startedUrl = window.location.hash
   constructor(rootStore) {
-    
-    this.getWeb3Promise = getWeb3().then(async (web3Config) => {
+
+    this.getWeb3Promise = async () => getWeb3().then(async (web3Config) => {
       const {web3Instance, defaultAccount} = web3Config;
       this.defaultAccount = defaultAccount;
-      this.web3 = new Web3(web3Instance.currentProvider); 
+      this.web3 = new Web3(web3Instance.currentProvider);
       this.getUserTokens(web3Config)
       this.setExplorerUrl(web3Config.explorerUrl)
       console.log('web3 loaded')
