@@ -66,7 +66,7 @@ class TxStore {
         this.txHashToIndex[hash] = index;
         this.txs[index] = {status: 'pending', name: `MultiSender Approval to spend ${this.tokenStore.totalBalance} ${this.tokenStore.tokenSymbol}`, hash}
         this.getTxStatus(hash)
-  
+
       })
       .on('error', (error) => {
         swal("Error!", error.message, 'error')
@@ -75,7 +75,7 @@ class TxStore {
     } catch (e){
       console.error(e)
     }
-    
+
   }
 
   async _multisend({slice, addPerTx}) {
@@ -84,15 +84,18 @@ class TxStore {
     }
     const token_address = this.tokenStore.tokenAddress
     let {addresses_to_send, balances_to_send, proxyMultiSenderAddress, currentFee, totalBalance} =  this.tokenStore;
-    
-    
+
+
     const start = (slice - 1) * addPerTx;
     const end = slice * addPerTx;
     addresses_to_send = addresses_to_send.slice(start, end);
     balances_to_send = balances_to_send.slice(start, end);
+    const balances_to_send_sum = balances_to_send.reduce((total, val) => {
+      return total.plus(new BN(val));
+    }, new BN("0")).toString(10);
     let ethValue;
     if(token_address === "0x000000000000000000000000000000000000bEEF"){
-      
+
       const totalInWei = balances_to_send.reduce((total, num) => {
         return (new BN(total).plus(new BN(num)))
       })
@@ -106,7 +109,7 @@ class TxStore {
     const multisender = new web3.eth.Contract(MultiSenderAbi, proxyMultiSenderAddress);
 
     try {
-      let encodedData = await multisender.methods.multisendToken(token_address, addresses_to_send, balances_to_send).encodeABI({from: this.web3Store.defaultAccount})
+      let encodedData = await multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum).encodeABI({from: this.web3Store.defaultAccount})
       let gas = await web3.eth.estimateGas({
           from: this.web3Store.defaultAccount,
           data: encodedData,
@@ -114,7 +117,7 @@ class TxStore {
           to: proxyMultiSenderAddress
       })
       console.log('gas', gas)
-      let tx = multisender.methods.multisendToken(token_address, addresses_to_send, balances_to_send)
+      let tx = multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum)
       .send({
         from: this.web3Store.defaultAccount,
         gasPrice: this.gasPriceStore.standardInHex,
@@ -137,12 +140,12 @@ class TxStore {
       if (slice > 0) {
         this._multisend({slice, addPerTx});
       } else {
-          
+
       }
     } catch(e){
       console.error(e)
     }
-  }  
+  }
 
   async getTxReceipt(hash){
     console.log('getTxReceipt')
