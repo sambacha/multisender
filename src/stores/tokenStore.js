@@ -134,8 +134,11 @@ class TokenStore {
       if(Web3Utils.isAddress(this.web3Store.defaultAccount) && tokenAddress !== "0x000000000000000000000000000000000000bEEF"){
         this.tokenAddress = tokenAddress;
         await this.getDecimals(tokenAddress)
+        console.log('tokenAddress Successful')
         await this.getBalance()
+        console.log('getBalance Successful')
         await this.getAllowance()
+        console.log('getAllowance Successful')
         await this.getCurrentFee()
         this.getTokenSymbol(tokenAddress)
         this.getEthBalance()
