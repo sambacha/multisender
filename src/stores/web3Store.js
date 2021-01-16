@@ -35,6 +35,9 @@ class Web3Store {
   async getUserTokens({trustApiName, defaultAccount}) {
     window.fetch(`https://${trustApiName}.trustwalletapp.com/tokens?address=${defaultAccount}`).then((res) => {
       return res.json()
+    }).catch((e) => {
+      this.loading = false;
+      console.error(e);
     }).then((res) => {
       let tokens = res.docs.map(({contract}) => {
         const {address, symbol} = contract;
