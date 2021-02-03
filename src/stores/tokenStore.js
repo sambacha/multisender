@@ -1,6 +1,6 @@
 import { action, observable, computed } from "mobx";
-import ERC20ABI from '../abis/ERC20ABI'
-import StormMultiSenderABI from '../abis/StormMultisender'
+import ERC20ABI from '../abis/ERC20ABI.json'
+// import StormMultiSenderABI from '../abis/StormMultisender.json'
 import Web3Utils from 'web3-utils';
 
 const BN = require('bignumber.js');
@@ -24,12 +24,23 @@ class TokenStore {
   @observable arrayLimit = 0
   @observable errors = []
   @observable dublicates = []
-  proxyMultiSenderAddress = process.env.REACT_APP_PROXY_MULTISENDER
 
   constructor(rootStore) {
     this.web3Store = rootStore.web3Store;
     this.gasPriceStore = rootStore.gasPriceStore;
 
+  }
+
+  async proxyMultiSenderAddress() {
+    try {
+      const web3Obj = await this.web3Store.getWeb3Promise()
+      const netIdEnvVarName = "REACT_APP_PROXY_MULTISENDER_" + web3Obj.netIdName.toUpperCase()
+      const contractAddress = process.env[netIdEnvVarName]
+      return contractAddress;
+    } catch (ex) {
+      console.log(ex)
+    }
+    return ""
   }
 
   @action
@@ -87,7 +98,7 @@ class TokenStore {
     try {
       const web3 = this.web3Store.web3;
       const token = new web3.eth.Contract(ERC20ABI, this.tokenAddress);
-      const allowance = await token.methods.allowance(this.web3Store.defaultAccount, this.proxyMultiSenderAddress).call();
+      const allowance = await token.methods.allowance(this.web3Store.defaultAccount, await this.proxyMultiSenderAddress()).call();
       this.allowance = new BN(allowance).div(this.multiplier).toString(10)
       return this.allowance
     }
@@ -100,13 +111,13 @@ class TokenStore {
 
   @action
   async getCurrentFee(){
-    const currentFee = "10000000000000000"; // 0.01 ETH
+    const currentFee = "100000000000000"; // 0.0001 ETH
     this.currentFee = Web3Utils.fromWei(currentFee)
     return this.currentFee
     // try {
     //   this.web3Store.getWeb3Promise().then(async () => {
     //     const web3 = this.web3Store.web3;
-    //     const multisender = new web3.eth.Contract(StormMultiSenderABI, this.proxyMultiSenderAddress);
+    //     const multisender = new web3.eth.Contract(StormMultiSenderABI, await this.proxyMultiSenderAddress());
     //     const currentFee = await multisender.methods.currentFee(this.web3Store.defaultAccount).call();
     //     this.currentFee = Web3Utils.fromWei(currentFee)
     //     return this.currentFee
@@ -118,12 +129,13 @@ class TokenStore {
   }
 
   async getArrayLimit(){
-    this.arrayLimit = 200;
+    // this.arrayLimit = 200;
+    this.arrayLimit = 1;
     return this.arrayLimit
     // try {
     //   await this.web3Store.getWeb3Promise().then(async () => {
     //     const web3 = this.web3Store.web3;
-    //     const multisender = new web3.eth.Contract(StormMultiSenderABI, this.proxyMultiSenderAddress);
+    //     const multisender = new web3.eth.Contract(StormMultiSenderABI, await this.proxyMultiSenderAddress());
     //     await multisender.methods.arrayLimit().call();
     //     return this.arrayLimit
     //   })
@@ -135,25 +147,21 @@ class TokenStore {
 
   @action
   async setTokenAddress(tokenAddress) {
-    await this.web3Store.getWeb3Promise().then(async () => {
-      if(Web3Utils.isAddress(this.web3Store.defaultAccount) && tokenAddress !== "0x000000000000000000000000000000000000bEEF"){
-        this.tokenAddress = tokenAddress;
-        await this.getDecimals(tokenAddress)
-        await this.getBalance()
-        await this.getAllowance()
-        await this.getCurrentFee()
-        this.getTokenSymbol(tokenAddress)
-        this.getEthBalance()
-        this.getArrayLimit()
-      } else {
-        this.tokenAddress = tokenAddress;
-        await this.getCurrentFee()
-        await this.getEthBalance()
-        this.getArrayLimit()
-        this.decimals = 18;
-        this.defAccTokenBalance = this.ethBalance;
-      }
-    })
+    await this.web3Store.getWeb3Promise()
+    await this.getCurrentFee()
+    await this.getEthBalance()
+    await this.getArrayLimit()
+    if(Web3Utils.isAddress(this.web3Store.defaultAccount) && tokenAddress !== "0x000000000000000000000000000000000000bEEF"){
+      this.tokenAddress = tokenAddress;
+      await this.getDecimals(tokenAddress)
+      await this.getBalance()
+      await this.getAllowance()
+      await this.getTokenSymbol(tokenAddress)
+    } else {
+      this.tokenAddress = tokenAddress;
+      this.decimals = 18;
+      this.defAccTokenBalance = this.ethBalance;
+    }
   }
 
   @action

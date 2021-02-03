@@ -1,21 +1,42 @@
 import Web3 from 'web3'
+
+const getAccounts = () => {
+  return new Promise(function (resolve, reject) {
+    (async () => {
+      try {
+        // Will open the MetaMask UI
+        // You should disable this button while the request is pending!
+        const { ethereum } = window;
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        resolve(accounts)
+      } catch (error) {
+        console.error(error);
+        reject(error)
+      }
+    })()
+  })
+}
+
+let _web3Config = null
 let getWeb3 = () => {
   return new Promise(function (resolve, reject) {
-    // Wait for loading completion to avoid race conditions with web3 injection timing.
+    if (null !== _web3Config) {
+      resolve(_web3Config)
+      return
+    }
+    // Wait for loading completion to avoid race conditions with ethereum injection timing.
     window.addEventListener('load', function () {
-      var results
-      var web3 = window.web3
-
-      // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-      if (typeof web3 !== 'undefined') {
+      // Checking if ethereum has been injected by the browser (Mist/MetaMask)
+      if (window.hasOwnProperty("ethereum")) {
         // Use Mist/MetaMask's provider.
-        web3 = new window.Web3(web3.currentProvider)
-        web3.version.getNetwork((err, netId) => {
+        let web3 = new Web3(Web3.givenProvider)
+        web3.eth.net.getId().then((netId) => {
           let netIdName, trustApiName, explorerUrl;
           console.log('netId', netId);
+          netId = "" + netId
           switch (netId) {
             case "1":
-              netIdName = 'Foundation'
+              netIdName = 'Mainnet'
               trustApiName = 'api'
               explorerUrl = 'https://etherscan.io'
               console.log('This is Foundation', netId)
@@ -55,20 +76,29 @@ let getWeb3 = () => {
               console.log('This is an unknown network.', netId)
           }
           document.title = `${netIdName} - MultiSender dApp`
-          var defaultAccount = web3.eth.defaultAccount || null;
-          if(defaultAccount === null){
-            reject({message: 'Please unlock your metamask and refresh the page'})
-          }
-          results = {
-            web3Instance: web3,
-            netIdName,
-            netId,
-            injectedWeb3: true,
-            defaultAccount,
-            trustApiName,
-            explorerUrl
-          }
-          resolve(results)
+          getAccounts().then(accounts => {
+            const firstAccount = accounts.length > 0 ? accounts[0] : null
+            var defaultAccount = web3.eth.defaultAccount || firstAccount || null;
+            if(defaultAccount === null){
+              reject({message: 'Please unlock your metamask and refresh the page'})
+              return
+            }
+            const results = {
+              web3Instance: web3,
+              netIdName,
+              netId,
+              injectedWeb3: true,
+              defaultAccount,
+              trustApiName,
+              explorerUrl
+            }
+            _web3Config = results
+            resolve(_web3Config)
+          }).catch(err => {
+            reject(err)
+          })
+        }).catch(err => {
+          reject(err)
         })
 
         console.log('Injected web3 detected.');
@@ -77,9 +107,10 @@ let getWeb3 = () => {
         // Fallback to localhost if no web3 injection.
         const errorMsg = `Metamask is not installed. Please go to
         https://metamask.io and return to this page after you installed it`
-        reject({message: errorMsg})
         console.log('No web3 instance injected, using Local web3.');
-        console.error('Metamask not found'); 
+        console.error('Metamask not found');
+        reject({message: errorMsg})
+        return
       }
     })
   })

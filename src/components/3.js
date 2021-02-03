@@ -64,7 +64,7 @@ export class ThirdStep extends React.Component {
           <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
           <p className="description">
           Please provide Token Address, JSON file with addresses <br />
-          This Dapp supports Mainnet, POA-Core, POA-sokol, Ropsten, Rinkeby, Kovan
+          This Dapp supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli
           </p>
           <form className="form">
             <ReactJson displayDataTypes={false}
@@ -120,7 +120,7 @@ export class ThirdStep extends React.Component {
                 <div className="send-info-i">
                   <p>Approximate Cost of Operation</p>
                   <p className="send-info-amount">
-                  {this.tokenStore.totalCostInEth} ETH        
+                  {this.tokenStore.totalCostInEth} ETH
                   </p>
                 </div>
                 <div className="send-info-i">
@@ -131,7 +131,7 @@ export class ThirdStep extends React.Component {
                 </div>
               </div>
             </div>
-            
+
             <Link onClick={this.onNext} className="button button_next" to='/4'>Next</Link>
           </form>
         </div>
