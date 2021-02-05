@@ -62,10 +62,15 @@ export class ThirdStep extends React.Component {
     if ("0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress) {
       return null
     }
+    const value = parseFloat(this.tokenStore.defAccTokenBalance)
+    let displayValue = value.toFixed(5)
+    if ("0.00000" === displayValue) {
+      displayValue = value
+    }
     return (
       <div className="send-info-i">
         <p>Your Balance</p>
-        <p className="send-info-amount">{this.tokenStore.defAccTokenBalance} {this.tokenStore.tokenSymbol}</p>
+        <p className="send-info-amount">{displayValue} {this.tokenStore.tokenSymbol}</p>
       </div>
     )
   }
