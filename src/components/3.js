@@ -57,6 +57,31 @@ export class ThirdStep extends React.Component {
       this.gasPriceStore.setSelectedGasPrice(selected.value)
     }
   }
+
+  renderTokenBalance() {
+    if ("0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress) {
+      return null
+    }
+    return (
+      <div className="send-info-i">
+        <p>Your Balance</p>
+        <p className="send-info-amount">{this.tokenStore.defAccTokenBalance} {this.tokenStore.tokenSymbol}</p>
+      </div>
+    )
+  }
+
+  renderTokenAllowance() {
+    if ("0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress) {
+      return null
+    }
+    return (
+      <div className="send-info-i">
+        <p>Current Allowance</p>
+        <p className="send-info-amount">{this.tokenStore.allowance} {this.tokenStore.tokenSymbol}</p>
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className="container container_bg">
@@ -88,13 +113,12 @@ export class ThirdStep extends React.Component {
             <div className="send-info">
               <div className="send-info-side">
                 <div className="send-info-i">
-                  <p>Total Tokens to be Sent</p>
+                  <p>{ "0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress ? "Total ETH to be Sent" : "Total Tokens to be Sent" }</p>
                   <p className="send-info-amount">{this.tokenStore.totalBalance} {this.tokenStore.tokenSymbol}</p>
                 </div>
-                <div className="send-info-i">
-                  <p>Your Balance</p>
-                  <p className="send-info-amount">{this.tokenStore.defAccTokenBalance} {this.tokenStore.tokenSymbol}</p>
-                </div>
+                {
+                  this.renderTokenBalance()
+                }
                 <div className="send-info-i">
                   <p>Your Contract's Current fee Per tx</p>
                   <p className="send-info-amount">{this.tokenStore.currentFee} ETH</p>
@@ -109,10 +133,9 @@ export class ThirdStep extends React.Component {
                   <p>Total Addresses in the Array</p>
                   <p className="send-info-amount">{this.tokenStore.jsonAddresses.length}</p>
                 </div>
-                <div className="send-info-i">
-                  <p>Current Allowance</p>
-                  <p className="send-info-amount">{this.tokenStore.allowance} {this.tokenStore.tokenSymbol}</p>
-                </div>
+                {
+                  this.renderTokenAllowance()
+                }
                 <div className="send-info-i">
                   <p>Total Number of tx Needed</p>
                   <p className="send-info-amount">{this.tokenStore.totalNumberTx}</p>

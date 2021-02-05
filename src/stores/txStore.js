@@ -109,44 +109,86 @@ class TxStore {
     const web3 = this.web3Store.web3;
     const multisender = new web3.eth.Contract(MultiSenderAbi, await this.tokenStore.proxyMultiSenderAddress());
 
-    try {
-      let encodedData = await multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum).encodeABI({from: this.web3Store.defaultAccount})
-      let gas = await web3.eth.estimateGas({
+    if(token_address === "0x000000000000000000000000000000000000bEEF"){
+      try {
+        let encodedData = await multisender.methods.multiTransfer_OST(addresses_to_send, balances_to_send).encodeABI({from: this.web3Store.defaultAccount})
+        let gas = await web3.eth.estimateGas({
+            from: this.web3Store.defaultAccount,
+            data: encodedData,
+            value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
+            to: await this.tokenStore.proxyMultiSenderAddress()
+        })
+        console.log('gas', gas)
+        let tx = multisender.methods.multiTransfer_OST(addresses_to_send, balances_to_send)
+        .send({
           from: this.web3Store.defaultAccount,
-          data: encodedData,
+          gasPrice: this.gasPriceStore.standardInHex,
+          gas: Web3Utils.toHex(gas),
           value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
-          to: await this.tokenStore.proxyMultiSenderAddress()
-      })
-      console.log('gas', gas)
-      let tx = multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum)
-      .send({
-        from: this.web3Store.defaultAccount,
-        gasPrice: this.gasPriceStore.standardInHex,
-        gas: Web3Utils.toHex(gas + 150000),
-        value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
-      })
+        })
 
-      .once('transactionHash', (hash) => {
-        this.txHashToIndex[hash] = this.txs.length
-        this.txs.push({status: 'pending', name: `Sending Batch #${this.txs.length} ${this.tokenStore.tokenSymbol}\n
-          From ${addresses_to_send[0]} to: ${addresses_to_send[addresses_to_send.length-1]}
-        `, hash})
-      })
-      .once('receipt', async (receipt) => {
-        await this.getTxStatus(receipt.transactionHash)
-      })
-      .on('error', (error) => {
-        swal("Error!", error.message, 'error')
-        console.log(error)
-      })
-      slice--;
-      if (slice > 0) {
-        this._multisend({slice, addPerTx});
-      } else {
+        .once('transactionHash', (hash) => {
+          this.txHashToIndex[hash] = this.txs.length
+          this.txs.push({status: 'pending', name: `Sending Batch #${this.txs.length} ${this.tokenStore.tokenSymbol}\n
+            From ${addresses_to_send[0]} to: ${addresses_to_send[addresses_to_send.length-1]}
+          `, hash})
+        })
+        .once('receipt', async (receipt) => {
+          await this.getTxStatus(receipt.transactionHash)
+        })
+        .on('error', (error) => {
+          swal("Error!", error.message, 'error')
+          console.log(error)
+        })
+        slice--;
+        if (slice > 0) {
+          this._multisend({slice, addPerTx});
+        } else {
 
+        }
+      } catch(e){
+        console.error(e)
       }
-    } catch(e){
-      console.error(e)
+    } else {
+      try {
+        let encodedData = await multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum).encodeABI({from: this.web3Store.defaultAccount})
+        let gas = await web3.eth.estimateGas({
+            from: this.web3Store.defaultAccount,
+            data: encodedData,
+            value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
+            to: await this.tokenStore.proxyMultiSenderAddress()
+        })
+        console.log('gas', gas)
+        let tx = multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum)
+        .send({
+          from: this.web3Store.defaultAccount,
+          gasPrice: this.gasPriceStore.standardInHex,
+          gas: Web3Utils.toHex(gas),
+          value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
+        })
+
+        .once('transactionHash', (hash) => {
+          this.txHashToIndex[hash] = this.txs.length
+          this.txs.push({status: 'pending', name: `Sending Batch #${this.txs.length} ${this.tokenStore.tokenSymbol}\n
+            From ${addresses_to_send[0]} to: ${addresses_to_send[addresses_to_send.length-1]}
+          `, hash})
+        })
+        .once('receipt', async (receipt) => {
+          await this.getTxStatus(receipt.transactionHash)
+        })
+        .on('error', (error) => {
+          swal("Error!", error.message, 'error')
+          console.log(error)
+        })
+        slice--;
+        if (slice > 0) {
+          this._multisend({slice, addPerTx});
+        } else {
+
+        }
+      } catch(e){
+        console.error(e)
+      }
     }
   }
 
