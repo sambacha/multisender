@@ -24,6 +24,9 @@ class Web3Store {
 
   async getWeb3Promise() {
     return getWeb3().then(async (web3Config) => {
+      if ('' !== this.explorerUrl) {
+        return this
+      }
       const {web3Instance, defaultAccount, netId, netIdName} = web3Config;
       this.defaultAccount = defaultAccount;
       this.web3 = new Web3(web3Instance.currentProvider);
@@ -57,7 +60,7 @@ class Web3Store {
       ).then((res) => {
         return res.json()
       }).then((res) => {
-        if (!((typeof res.result === "object") && res.result.hasOwnProperty("length"))) {
+        if (!(res.result && (typeof res.result === "object") && res.result.hasOwnProperty("length"))) {
           this.loading = false;
           reject("Failed to load user tokens. Try again a minute later please.")
           return

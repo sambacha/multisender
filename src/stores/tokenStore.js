@@ -57,11 +57,22 @@ class TokenStore {
   }
 
   async getBalance() {
+    if ('' !== this.defAccTokenBalance) {
+      return this.defAccTokenBalance
+    }
     try {
         const web3 = this.web3Store.web3;
         const token = new web3.eth.Contract(ERC20ABI, this.tokenAddress);
         const defAccTokenBalance = await token.methods.balanceOf(this.web3Store.defaultAccount).call();
         this.defAccTokenBalance = new BN(defAccTokenBalance).div(this.multiplier).toString(10)
+        web3.eth.subscribe("newBlockHeaders", async (err, result) => {
+          if (err) {
+            console.log(err);
+            return
+          }
+          const defAccTokenBalance = await token.methods.balanceOf(this.web3Store.defaultAccount).call();
+          this.defAccTokenBalance = new BN(defAccTokenBalance).div(this.multiplier).toString(10)
+        })
         return this.defAccTokenBalance
     }
     catch(e){
@@ -70,11 +81,23 @@ class TokenStore {
     }
   }
   async getEthBalance() {
+    if ('' !== this.ethBalance) {
+      return this.ethBalance
+    }
     try {
       const web3 = this.web3Store.web3;
       let ethBalance =  await web3.eth.getBalance(this.web3Store.defaultAccount)
       ethBalance = Web3Utils.fromWei(ethBalance)
       this.ethBalance = new BN(ethBalance).toFormat(3)
+      web3.eth.subscribe("newBlockHeaders", async (err, result) => {
+        if (err) {
+          console.log(err);
+          return
+        }
+        let ethBalance =  await web3.eth.getBalance(this.web3Store.defaultAccount)
+        ethBalance = Web3Utils.fromWei(ethBalance)
+        this.ethBalance = new BN(ethBalance).toFormat(3)
+      })
       return this.ethBalance
     }
     catch(e){
@@ -95,11 +118,22 @@ class TokenStore {
   }
   @action
   async getAllowance() {
+    if ('' !== this.allowance) {
+      return this.allowance
+    }
     try {
       const web3 = this.web3Store.web3;
       const token = new web3.eth.Contract(ERC20ABI, this.tokenAddress);
       const allowance = await token.methods.allowance(this.web3Store.defaultAccount, await this.proxyMultiSenderAddress()).call();
       this.allowance = new BN(allowance).div(this.multiplier).toString(10)
+      web3.eth.subscribe("newBlockHeaders", async (err, result) => {
+        if (err) {
+          console.log(err);
+          return
+        }
+        const allowance = await token.methods.allowance(this.web3Store.defaultAccount, await this.proxyMultiSenderAddress()).call();
+        this.allowance = new BN(allowance).div(this.multiplier).toString(10)
+      })
       return this.allowance
     }
     catch(e){

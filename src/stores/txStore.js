@@ -36,9 +36,9 @@ class TxStore {
     if(new BN(this.tokenStore.totalBalance === "" ? "0" : this.tokenStore.totalBalance).gt(new BN(this.tokenStore.allowance === "" ? "0" : this.tokenStore.allowance))){
       this._approve();
       const interval = setInterval(() => {
-        const index = this.txHashToIndex[this.approval];
-        console.log('checking autorun', index, this.approval, this.txHashToIndex, toJS(this.txs))
         if(this.approval){
+          const index = this.txHashToIndex[this.approval];
+          console.log('checking autorun', index, this.approval, this.txHashToIndex, toJS(this.txs))
           if(this.txs[index] && this.txs[index].status === 'mined'){
             clearInterval(interval);
             console.log('lets GO!', this.tokenStore.totalNumberTx, this.tokenStore.arrayLimit)
@@ -46,11 +46,36 @@ class TxStore {
               this._multisend({slice: this.tokenStore.totalNumberTx, addPerTx: this.tokenStore.arrayLimit})
             }, 1000)
           }
+        } else {
+          console.log('checking autorun', this.txHashToIndex, toJS(this.txs))
         }
       }, 3000)
       this.interval = interval;
     } else {
       this._multisend({slice: this.tokenStore.totalNumberTx, addPerTx: this.tokenStore.arrayLimit})
+    }
+  }
+
+  @action
+  async doApprove(){
+    this.keepRunning = true;
+    this.txs = [];
+    this.approval = '';
+    if(new BN(this.tokenStore.totalBalance === "" ? "0" : this.tokenStore.totalBalance).gt(new BN(this.tokenStore.allowance === "" ? "0" : this.tokenStore.allowance))){
+      this._approve();
+      const interval = setInterval(() => {
+        if(this.approval){
+          const index = this.txHashToIndex[this.approval];
+          console.log('checking autorun', index, this.approval, this.txHashToIndex, toJS(this.txs))
+          if(this.txs[index] && this.txs[index].status === 'mined'){
+            clearInterval(interval);
+            console.log('Approve complete')
+          }
+        } else {
+          console.log('checking autorun', this.txHashToIndex, toJS(this.txs))
+        }
+      }, 3000)
+      this.interval = interval;
     }
   }
 
@@ -79,13 +104,57 @@ class TxStore {
 
   }
 
-  async _multisend({slice, addPerTx}) {
-    if(!this.keepRunning){
-      return
+  async getApproveGas(){
+    const web3 = this.web3Store.web3;
+    const token = new web3.eth.Contract(ERC20ABI, this.tokenStore.tokenAddress);
+    let encodedData = await token.methods.approve(await this.tokenStore.proxyMultiSenderAddress(), this.tokenStore.totalBalanceWithDecimals).encodeABI({from: this.web3Store.defaultAccount})
+    let gas = await web3.eth.estimateGas({
+        from: this.web3Store.defaultAccount,
+        data: encodedData,
+        to: this.tokenStore.tokenAddress,
+    })
+    return gas
+  }
+
+  async _getTransferGas(to, value){
+    const web3 = this.web3Store.web3;
+    const { tokenAddress } = this.tokenStore
+    if(tokenAddress === "0x000000000000000000000000000000000000bEEF"){
+      let gas = await web3.eth.estimateGas({
+          from: this.web3Store.defaultAccount,
+          // data: null,
+          value: value,
+          to: to
+      })
+      return gas
+    } else {
+      const token = new web3.eth.Contract(ERC20ABI, this.tokenStore.tokenAddress);
+      const encodedData = await token.methods.transfer(to, value).encodeABI({from: this.web3Store.defaultAccount})
+      const gas = await web3.eth.estimateGas({
+          from: this.web3Store.defaultAccount,
+          data: encodedData,
+          to: this.tokenStore.tokenAddress,
+      })
+      return gas
     }
+  }
+
+  async getTransferGas() {
+    let totalGas = 0
+    let { addresses_to_send, balances_to_send } =  this.tokenStore
+    for (let i = 0; i < addresses_to_send.length; i++) {
+      const to = addresses_to_send[i]
+      const value = balances_to_send[i]
+      totalGas += await this._getTransferGas(to, value)
+    }
+    return totalGas
+  }
+
+  async getMultisendGas({slice, addPerTx}) {
+    let totalGas = 0
+
     const token_address = this.tokenStore.tokenAddress
     let {addresses_to_send, balances_to_send, currentFee, totalBalance} =  this.tokenStore;
-
 
     const start = (slice - 1) * addPerTx;
     const end = slice * addPerTx;
@@ -110,7 +179,62 @@ class TxStore {
     const multisender = new web3.eth.Contract(MultiSenderAbi, await this.tokenStore.proxyMultiSenderAddress());
 
     if(token_address === "0x000000000000000000000000000000000000bEEF"){
-      try {
+      let encodedData = await multisender.methods.multiTransfer_OST(addresses_to_send, balances_to_send).encodeABI({from: this.web3Store.defaultAccount})
+      let gas = await web3.eth.estimateGas({
+          from: this.web3Store.defaultAccount,
+          data: encodedData,
+          value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
+          to: await this.tokenStore.proxyMultiSenderAddress()
+      })
+      totalGas += gas
+    } else {
+      let encodedData = await multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum).encodeABI({from: this.web3Store.defaultAccount})
+      let gas = await web3.eth.estimateGas({
+          from: this.web3Store.defaultAccount,
+          data: encodedData,
+          value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
+          to: await this.tokenStore.proxyMultiSenderAddress()
+      })
+      totalGas += gas
+    }
+    slice--;
+    if (slice > 0) {
+      totalGas += await this.getMultisendGas({slice, addPerTx});
+    }
+    return totalGas
+  }
+
+  async _multisend({slice, addPerTx}) {
+    if(!this.keepRunning){
+      return
+    }
+    const token_address = this.tokenStore.tokenAddress
+    let {addresses_to_send, balances_to_send, currentFee, totalBalance} =  this.tokenStore;
+
+    const start = (slice - 1) * addPerTx;
+    const end = slice * addPerTx;
+    addresses_to_send = addresses_to_send.slice(start, end);
+    balances_to_send = balances_to_send.slice(start, end);
+    const balances_to_send_sum = balances_to_send.reduce((total, val) => {
+      return total.plus(new BN(val));
+    }, new BN("0")).toString(10);
+    let ethValue;
+    if(token_address === "0x000000000000000000000000000000000000bEEF"){
+
+      const totalInWei = balances_to_send.reduce((total, num) => {
+        return (new BN(total).plus(new BN(num)))
+      })
+      const totalInEth = Web3Utils.fromWei(totalInWei.toString())
+      ethValue = new BN(currentFee).plus(totalInEth)
+    } else {
+      ethValue = new BN(currentFee)
+    }
+    console.log('slice', slice, addresses_to_send[0], balances_to_send[0], addPerTx)
+    const web3 = this.web3Store.web3;
+    const multisender = new web3.eth.Contract(MultiSenderAbi, await this.tokenStore.proxyMultiSenderAddress());
+
+    try {
+      if(token_address === "0x000000000000000000000000000000000000bEEF"){
         let encodedData = await multisender.methods.multiTransfer_OST(addresses_to_send, balances_to_send).encodeABI({from: this.web3Store.defaultAccount})
         let gas = await web3.eth.estimateGas({
             from: this.web3Store.defaultAccount,
@@ -139,18 +263,10 @@ class TxStore {
         .on('error', (error) => {
           swal("Error!", error.message, 'error')
           console.log(error)
-        })
-        slice--;
-        if (slice > 0) {
+          // re-send
           this._multisend({slice, addPerTx});
-        } else {
-
-        }
-      } catch(e){
-        console.error(e)
-      }
-    } else {
-      try {
+        })
+      } else {
         let encodedData = await multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum).encodeABI({from: this.web3Store.defaultAccount})
         let gas = await web3.eth.estimateGas({
             from: this.web3Store.defaultAccount,
@@ -179,16 +295,16 @@ class TxStore {
         .on('error', (error) => {
           swal("Error!", error.message, 'error')
           console.log(error)
-        })
-        slice--;
-        if (slice > 0) {
+          // re-send
           this._multisend({slice, addPerTx});
-        } else {
-
-        }
-      } catch(e){
-        console.error(e)
+        })
       }
+      slice--;
+      if (slice > 0) {
+        this._multisend({slice, addPerTx});
+      }
+    } catch(e){
+      console.error(e)
     }
   }
 

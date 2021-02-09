@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, FirstStep, SecondStep, ThirdStep, FourthStep, FifthStep, Retry, Welcome } from './components';
+import { Header, FirstStep, SecondStep, ThirdStep, ApproveStep, FourthStep, FifthStep, Retry, Welcome } from './components';
 import { Route, Redirect } from 'react-router-dom';
 import { inject } from "mobx-react";
 import './assets/stylesheets/application.css';
@@ -38,6 +38,7 @@ export class App extends React.Component {
         <PrivateRoute path="/2" component={SecondStep} startedUrl={startedUrl} />
         <PrivateRoute exact path="/2" component={SecondStep} startedUrl={startedUrl}/>
         <PrivateRoute exact path="/3" component={ThirdStep} startedUrl={startedUrl}/>
+        <PrivateRoute exact path="/approve" component={ApproveStep} startedUrl={startedUrl}/>
         <PrivateRoute exact path="/4" component={FourthStep} startedUrl={startedUrl}/>
         <PrivateRoute exact path="/5" component={FifthStep} startedUrl={startedUrl}/>
         {/* <Route exact path="/retry" component={Retry}/> */}

@@ -252,9 +252,8 @@ export class FirstStep extends React.Component {
           </div>
           <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
           <p className="description">
-            Please provide Token Address, CSV file with addresses <br />
-            This Dapp supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli <br/>
-            Please wait while all your token balances are loaded
+            Please provide Token Address and CSV file with addresses and values to send <br />
+            This Dapp supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli
           </p>
           <Form className="form">
             <div className="form-inline">

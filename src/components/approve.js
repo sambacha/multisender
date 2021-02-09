@@ -1,51 +1,34 @@
 import React from 'react';
 import { inject, observer } from "mobx-react";
+  import { Link } from 'react-router-dom';
 import { Transaction } from "./Transaction"
-import { Link } from 'react-router-dom';
 
 @inject("UiStore")
 @observer
-export class FourthStep extends React.Component {
+export class ApproveStep extends React.Component {
   constructor(props){
     super(props);
+    this.props = props
     this.txStore = props.UiStore.txStore;
-    this.tokenStore = props.UiStore.tokenStore;
     this.explorerUrl = props.UiStore.web3Store.explorerUrl;
     this.onNext = this.onNext.bind(this)
     this.intervalId = null
     this.state = {
       txs: this.txStore.txs,
-      totalNumberOftx: this.calcTotalNumberOftx(),
     }
-    this.doSendExecuted = false
   }
-
-  onNext(e) {
-    e.preventDefault();
-    this.props.history.push('/')
-  }
-
   componentDidMount(){
     (async () => {
       try {
-        if (!this.doSendExecuted) {
-          this.doSendExecuted = true
-          await this.txStore.doSend()
-          this.setState({
-            txs: this.txStore.txs,
-            totalNumberOftx: this.calcTotalNumberOftx(),
-          })
-        }
+        await this.txStore.doApprove()
+        this.setState({txs: this.txStore.txs})
       } catch(e){
         console.log('doApprove error:', e)
       }
     })()
     if (null === this.intervalId) {
       this.intervalId = setInterval(() => {
-        this.setState({
-          txs: this.txStore.txs,
-          totalNumberOftx: this.calcTotalNumberOftx(),
-        })
+        this.setState({txs: this.txStore.txs})
       }, 1000)
     }
   }
@@ -57,25 +40,13 @@ export class FourthStep extends React.Component {
     }
   }
 
-  renderHomeButton() {
-      return (
-        <Link onClick={this.onNext} className="button button_next" to='/'>Home</Link>
-      )
-  }
-
-  calcTotalNumberOftx() {
-    let totalNumberOftx;
-
-    // if(Number(this.tokenStore.totalBalance) > Number(this.tokenStore.allowance)){
-    //   totalNumberOftx = Number(this.tokenStore.totalNumberTx) + 1;
-    // } else {
-      totalNumberOftx = Number(this.tokenStore.totalNumberTx)
-    // }
-    return totalNumberOftx
+  onNext(e) {
+    e.preventDefault();
+    this.props.history.push('/3')
   }
 
   render () {
-    const { txs, totalNumberOftx } = this.state
+    const { txs } = this.state
     const txHashes = txs.map((tx, index) => {
       return <Transaction key={index} tx={{...tx}} explorerUrl={this.explorerUrl}/>
     })
@@ -84,21 +55,21 @@ export class FourthStep extends React.Component {
       return mined && status === "mined"
     }, true)
     let status;
-    if(txs.length === totalNumberOftx){
+    if(txs.length > 0){
       if (mined) {
-        status =  "All transactions are mined. Congratulations!"
+        status =  "Approve transaction is mined. Press the Next button to continue"
       } else {
-        status =  "Transactions were sent out. Now wait until all transactions are mined."
+        status = "Approve transaction was sent out. Now wait until it is mined"
       }
     } else {
-      const txCount = totalNumberOftx - txs.length
-      status = `Please wait...until you sign ${txCount} transactions in Metamask`
+      status = `Please wait...until you sign transaction in Metamask`
     }
     return (
       <div className="container container_bg">
         <div className="content">
           <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
           <p className="description">
+            Please sign an Approve transaction <br />
             This Dapp supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli
           </p>
           <form className="form">
@@ -106,7 +77,7 @@ export class FourthStep extends React.Component {
             <div className="table">
               {txHashes}
             </div>
-            { this.renderHomeButton() }
+            <Link onClick={this.onNext} className="button button_next" to='/3'>Next</Link>
           </form>
         </div>
       </div>
