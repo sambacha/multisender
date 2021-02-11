@@ -13,7 +13,7 @@ class TokenStore {
   @observable tokenAddress = '';
   @observable defAccTokenBalance = ''
   @observable allowance = ''
-  @observable currentFee = ''
+  @observable currentFee = '0'
   @observable tokenSymbol = ''
   @observable ethBalance = ''
   @observable balances_to_send = []
@@ -145,8 +145,8 @@ class TokenStore {
 
   @action
   async getCurrentFee(){
-    const currentFee = "100000000000000"; // 0.0001 ETH
-    this.currentFee = Web3Utils.fromWei(currentFee)
+    // const currentFee = "100000000000000"; // 0.0001 ETH
+    // this.currentFee = Web3Utils.fromWei(currentFee)
     return this.currentFee
     // try {
     //   this.web3Store.getWeb3Promise().then(async () => {
@@ -162,9 +162,13 @@ class TokenStore {
     // }
   }
 
+  setCurrentFee(currentFee){
+    this.currentFee = Web3Utils.fromWei(currentFee)
+  }
+
   async getArrayLimit(){
-    // this.arrayLimit = 200;
-    this.arrayLimit = 1;
+    this.arrayLimit = 200;
+    // this.arrayLimit = 1;
     return this.arrayLimit
     // try {
     //   await this.web3Store.getWeb3Promise().then(async () => {
@@ -215,7 +219,7 @@ class TokenStore {
     this.tokenAddress = '';
     this.defAccTokenBalance = ''
     this.allowance = ''
-    this.currentFee = ''
+    this.currentFee = '0'
     this.tokenSymbol = ''
     this.ethBalance = ''
     this.balances_to_send = []
@@ -289,15 +293,15 @@ class TokenStore {
     return Math.ceil(this.jsonAddresses.length/this.arrayLimit);
   }
 
-  @computed get totalCostInEth(){
-    const standardGasPrice = Web3Utils.toWei(this.gasPriceStore.selectedGasPrice.toString(), 'gwei');
-    const currentFeeInWei = Web3Utils.toWei(this.currentFee);
-    const tx = new BN(standardGasPrice).times(new BN('5000000'))
-    const txFeeMiners = tx.times(new BN(this.totalNumberTx))
-    const contractFee = new BN(currentFeeInWei).times(this.totalNumberTx);
-
-    return Web3Utils.fromWei(txFeeMiners.plus(contractFee).toString(10))
-  }
+  // @computed get totalCostInEth(){
+  //   const standardGasPrice = Web3Utils.toWei(this.gasPriceStore.selectedGasPrice.toString(), 'gwei');
+  //   const currentFeeInWei = Web3Utils.toWei(this.currentFee);
+  //   const tx = new BN(standardGasPrice).times(new BN('5000000'))
+  //   const txFeeMiners = tx.times(new BN(this.totalNumberTx))
+  //   const contractFee = new BN(currentFeeInWei).times(this.totalNumberTx);
+  //
+  //   return Web3Utils.fromWei(txFeeMiners.plus(contractFee).toString(10))
+  // }
 
 }
 

@@ -160,15 +160,12 @@ class TxStore {
     const end = slice * addPerTx;
     addresses_to_send = addresses_to_send.slice(start, end);
     balances_to_send = balances_to_send.slice(start, end);
-    const balances_to_send_sum = balances_to_send.reduce((total, val) => {
+    const totalInWei = balances_to_send.reduce((total, val) => {
       return total.plus(new BN(val));
-    }, new BN("0")).toString(10);
+    }, new BN("0"));
+    const balances_to_send_sum = totalInWei.toString(10)
     let ethValue;
     if(token_address === "0x000000000000000000000000000000000000bEEF"){
-
-      const totalInWei = balances_to_send.reduce((total, num) => {
-        return (new BN(total).plus(new BN(num)))
-      })
       const totalInEth = Web3Utils.fromWei(totalInWei.toString())
       ethValue = new BN(currentFee).plus(totalInEth)
     } else {
@@ -215,15 +212,12 @@ class TxStore {
     const end = slice * addPerTx;
     addresses_to_send = addresses_to_send.slice(start, end);
     balances_to_send = balances_to_send.slice(start, end);
-    const balances_to_send_sum = balances_to_send.reduce((total, val) => {
+    const totalInWei = balances_to_send.reduce((total, val) => {
       return total.plus(new BN(val));
-    }, new BN("0")).toString(10);
+    }, new BN("0"));
+    const balances_to_send_sum = totalInWei.toString(10)
     let ethValue;
     if(token_address === "0x000000000000000000000000000000000000bEEF"){
-
-      const totalInWei = balances_to_send.reduce((total, num) => {
-        return (new BN(total).plus(new BN(num)))
-      })
       const totalInEth = Web3Utils.fromWei(totalInWei.toString())
       ethValue = new BN(currentFee).plus(totalInEth)
     } else {
@@ -359,6 +353,16 @@ class TxStore {
         this.txs[index].status = `mined`
       }
     }
+  }
+
+  // gas used by the already processed Approve tx
+  async getApproveTxGas() {
+    if ('' === this.approval) {
+      return 0
+    }
+    const web3 = this.web3Store.web3;
+    const receipt = await web3.eth.getTransactionReceipt(this.approval)
+    return receipt.gasUsed
   }
 
 }

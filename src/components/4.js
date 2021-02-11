@@ -22,7 +22,9 @@ export class FourthStep extends React.Component {
 
   onNext(e) {
     e.preventDefault();
-    this.props.history.push('/')
+    // reload page to make sure that all caches are cleared
+    location.reload()
+    // this.props.history.push('/')
   }
 
   componentDidMount(){

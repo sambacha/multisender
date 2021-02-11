@@ -22,7 +22,14 @@ export class ThirdStep extends React.Component {
       transferGas: 0,
       approveGas: 0,
       multisendGas: 0,
+      selectedGasShare: '50'
     }
+    this.gasSharesArray = [
+      {label: '20%', value: '20'},
+      {label: '50%', value: '50'},
+      {label: '70%', value: '70'},
+      {label: '100%', value: '100'},
+    ]
   }
   componentDidMount() {
     if(this.tokenStore.dublicates.length > 0){
@@ -39,14 +46,28 @@ export class ThirdStep extends React.Component {
         this.setState({transferGas})
         if ("0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress) {
           // Ether
-          const multisendGas = await this.txStore.getMultisendGas({slice: this.tokenStore.totalNumberTx, addPerTx: this.tokenStore.arrayLimit})
+          const multisendGasOrig = await this.txStore.getMultisendGas({slice: this.tokenStore.totalNumberTx, addPerTx: this.tokenStore.arrayLimit})
+          // Gas Limit: 84,279
+          // Gas Used by Transaction: 82,164 (97.49%)
+          const multisendGas = Math.floor(parseInt(multisendGasOrig) * 0.975)
           this.setState({multisendGas})
+          this.updateCurrentFee()
         } else {
-          if (new BN(this.tokenStore.allowance).gte(new BN(this.tokenStore.totalBalance))){
-            const multisendGas = await this.txStore.getMultisendGas({slice: this.tokenStore.totalNumberTx, addPerTx: this.tokenStore.arrayLimit})
-            this.setState({multisendGas})
+          if (parseFloat(this.tokenStore.allowance) >= (parseFloat(this.tokenStore.totalBalance))){
+            const multisendGasOrig = await this.txStore.getMultisendGas({slice: this.tokenStore.totalNumberTx, addPerTx: this.tokenStore.arrayLimit})
+            // Gas Limit: 116,153
+            // Gas Used by Transaction: 81,933 (70.54%) for ERC20
+            // Gas Limit: 170,018
+            // Gas Used by Transaction: 135,628 (79.77%) for ERC777 // TODO: detect token type
+            const multisendGas = Math.floor(parseInt(multisendGasOrig) * 0.71)
+            const approveGas = await this.txStore.getApproveTxGas()
+            this.setState({multisendGas, approveGas})
+            this.updateCurrentFee()
           } else {
-            const approveGas = await this.txStore.getApproveGas()
+            const approveGasOrig = await this.txStore.getApproveGas()
+            // Gas Limit: 66,181
+            // Gas Used by Transaction: 44,121 (66.67%)
+            const approveGas = Math.floor(parseInt(approveGasOrig) * 0.6667)
             this.setState({approveGas})
           }
         }
@@ -55,6 +76,31 @@ export class ThirdStep extends React.Component {
       }
     })()
   }
+
+  updateCurrentFee() {
+    const id = setTimeout(() => {
+      clearTimeout(id)
+      this._updateCurrentFeeImpl()
+    }, 0)
+  }
+
+  _updateCurrentFeeImpl() {
+    const { selectedGasShare, multisendGas, approveGas, transferGas } = this.state
+    const gasPrice = this.gasPriceStore.standardInHex
+    const approvePlusMultisendGas = (new BN(multisendGas)).plus(new BN(approveGas))
+    if (approvePlusMultisendGas.gt(new BN(transferGas))) {
+      // no savings
+      this.tokenStore.setCurrentFee('0')
+      return
+    }
+    const savedGas = (new BN(transferGas)).minus(approvePlusMultisendGas)
+    const savedGasEthValue = new BN(gasPrice).times(savedGas)
+    const savedGasPerTxEthValue = savedGasEthValue.div(this.tokenStore.totalNumberTx)
+    const newCurrentFee = savedGasPerTxEthValue.times(new BN(parseInt(selectedGasShare))).div(100)
+    const newCurrentFeeRounded = newCurrentFee.dp(0, 1)
+    this.tokenStore.setCurrentFee(newCurrentFeeRounded.toString(10))
+  }
+
   onNext(e) {
     e.preventDefault();
     if (new BN(this.tokenStore.totalBalance).gt(new BN(this.tokenStore.defAccTokenBalance))){
@@ -66,11 +112,14 @@ export class ThirdStep extends React.Component {
       })
       return
     }
-    if( new BN(this.tokenStore.totalCostInEth).gt(new BN(this.tokenStore.ethBalance))){
+    const multisendGasEthValue = this.getMultisendPlusApproveGasEthValue()
+    const ethBalanceWei = Web3Utils.toWei(this.tokenStore.ethBalance, 'ether');
+    if( multisendGasEthValue.gt(new BN(ethBalanceWei))){
+      const displayMultisendGasEthValue = parseFloat(Web3Utils.fromWei(multisendGasEthValue.toString())).toFixed(5)
       console.error('please fund you account in ')
       swal({
         title: "Insufficient ETH balance",
-        text: `You don't have enough ETH to send to all addresses. Amount needed: ${this.tokenStore.totalCostInEth} ETH`,
+        text: `You don't have enough ETH to send to all addresses. Amount needed: ${displayMultisendGasEthValue} ETH`,
         icon: "error",
       })
       return
@@ -90,6 +139,16 @@ export class ThirdStep extends React.Component {
   onGasPriceChange = (selected) => {
     if(selected){
       this.gasPriceStore.setSelectedGasPrice(selected.value)
+      this.updateCurrentFee()
+    }
+  }
+
+  onGasShareChange = (selected) => {
+    if(selected){
+      this.setState({
+        selectedGasShare: selected.value,
+      })
+      this.updateCurrentFee()
     }
   }
 
@@ -153,6 +212,13 @@ export class ThirdStep extends React.Component {
     }
   }
 
+  getMultisendPlusApproveGasEthValue() {
+    const gasPrice = this.gasPriceStore.standardInHex
+    const approvePlusMultisendGas = (new BN(this.state.multisendGas)).plus(new BN(this.state.approveGas))
+    const multisendGasEthValue = new BN(gasPrice).times(approvePlusMultisendGas)
+    return multisendGasEthValue
+  }
+
   renderMultisendGasInfo() {
     const gasPrice = this.gasPriceStore.standardInHex
     const approvePlusMultisendGas = (new BN(this.state.multisendGas)).plus(new BN(this.state.approveGas))
@@ -180,21 +246,22 @@ export class ThirdStep extends React.Component {
   }
 
   renderSavingsGasInfo() {
+    const { selectedGasShare, multisendGas, approveGas, transferGas } = this.state
     const gasPrice = this.gasPriceStore.standardInHex
     const transferEthValue = new BN(gasPrice).times(new BN(this.state.transferGas))
     const displayTransferEthValue = Web3Utils.fromWei(transferEthValue.toString())
     // const approveGasEthValue = new BN(gasPrice).times(new BN(this.state.approveGas))
     // const displayApproveGasEthValue = Web3Utils.fromWei(approveGasEthValue.toString())
-    const approvePlusMultisendGas = (new BN(this.state.multisendGas)).plus(new BN(this.state.approveGas))
+    const approvePlusMultisendGas = (new BN(multisendGas)).plus(new BN(approveGas))
     const multisendGasEthValue = new BN(gasPrice).times(approvePlusMultisendGas)
     const displayMultisendGasEthValue = Web3Utils.fromWei(multisendGasEthValue.toString())
-    const savedGas = approvePlusMultisendGas.minus(new BN(this.state.transferGas))
+    const savedGas = (new BN(transferGas)).minus(approvePlusMultisendGas)
     const savedGasEthValue = new BN(gasPrice).times(savedGas)
     const displaySavedGasEthValue = parseFloat(Web3Utils.fromWei(savedGasEthValue.toString())).toFixed(5)
     let sign = ""
-    if (approvePlusMultisendGas.gt(new BN(this.state.transferGas))) {
-      sign = "-"
-    }
+    // if (approvePlusMultisendGas.gt(new BN(transferGas))) {
+    //   sign = "-"
+    // }
     if ("0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress) {
       // Ether
       return (
@@ -222,7 +289,8 @@ export class ThirdStep extends React.Component {
         <div className="content">
           <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
           <p className="description">
-            Verify addresses and values and choose Gas Price please
+            Verify addresses and values and choose <strong>Gas Price</strong> and <strong>Gas Sharing</strong> values<br/>
+            <strong>Gas Sharing</strong> is a portion of gas saved by this service that you are OK to tip
           </p>
           <form className="form">
             <ReactJson displayDataTypes={false}
@@ -232,18 +300,29 @@ export class ThirdStep extends React.Component {
               name={false}
               theme="solarized"
               src={this.tokenStore.jsonAddresses.slice()} />
-              <div style={{padding: "25px 0px"}}>
-                <p>Network Speed (Gas Price)</p>
-                <Select.Creatable
-                  isLoading={this.gasPriceStore.loading}
-                  value={this.gasPriceStore.selectedGasPrice}
-                  onChange={this.onGasPriceChange}
-                  loadingPlaceholder="Fetching gas Price data ..."
-                  placeholder="Please select desired network speed"
-                  options={this.gasPriceStore.gasPricesArray.slice()}
-                />
-              </div>
-            <div className="send-info">
+            <div style={{padding: "25px 0px"}}>
+              <p>Network Speed (Gas Price)</p>
+              <Select.Creatable
+                isLoading={this.gasPriceStore.loading}
+                value={this.gasPriceStore.selectedGasPrice}
+                onChange={this.onGasPriceChange}
+                loadingPlaceholder="Fetching gas Price data ..."
+                placeholder="Please select desired network speed"
+                options={this.gasPriceStore.gasPricesArray.slice()}
+              />
+            </div>
+            <div>
+              <p>Saved Gas Sharing</p>
+              <Select.Creatable
+                isLoading={false}
+                value={this.state.selectedGasShare}
+                onChange={this.onGasShareChange}
+                loadingPlaceholder=""
+                placeholder="Please select desired gas sharing"
+                options={this.gasSharesArray.slice()}
+              />
+            </div>
+            <div className="send-info" style={{padding: "25px 0px"}}>
               <div className="send-info-side">
                 <div className="send-info-i">
                   <p>{ "0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress ? "Total ETH to be Sent" : "Total Tokens to be Sent" }</p>
