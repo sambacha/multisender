@@ -17,12 +17,12 @@ export class ThirdStep extends React.Component {
     this.gasPriceStore = props.UiStore.gasPriceStore;
     console.log(this.gasPriceStore.gasPricesArray)
     this.onNext = this.onNext.bind(this)
+    this.onPrev = this.onPrev.bind(this)
     this.state = {
       gasPrice: '',
       transferGas: 0,
       approveGas: 0,
       multisendGas: 0,
-      selectedGasShare: '50'
     }
     this.gasSharesArray = [
       {label: '20%', value: '20'},
@@ -85,7 +85,7 @@ export class ThirdStep extends React.Component {
   }
 
   _updateCurrentFeeImpl() {
-    const { selectedGasShare, multisendGas, approveGas, transferGas } = this.state
+    const { multisendGas, approveGas, transferGas } = this.state
     const gasPrice = this.gasPriceStore.standardInHex
     const approvePlusMultisendGas = (new BN(multisendGas)).plus(new BN(approveGas))
     if (approvePlusMultisendGas.gt(new BN(transferGas))) {
@@ -96,9 +96,14 @@ export class ThirdStep extends React.Component {
     const savedGas = (new BN(transferGas)).minus(approvePlusMultisendGas)
     const savedGasEthValue = new BN(gasPrice).times(savedGas)
     const savedGasPerTxEthValue = savedGasEthValue.div(this.tokenStore.totalNumberTx)
-    const newCurrentFee = savedGasPerTxEthValue.times(new BN(parseInt(selectedGasShare))).div(100)
+    const newCurrentFee = savedGasPerTxEthValue.times(new BN(parseInt(this.gasPriceStore.selectedGasShare))).div(100)
     const newCurrentFeeRounded = newCurrentFee.dp(0, 1)
     this.tokenStore.setCurrentFee(newCurrentFeeRounded.toString(10))
+  }
+
+  onPrev(e) {
+    e.preventDefault();
+    this.props.history.push('/1')
   }
 
   onNext(e) {
@@ -145,9 +150,7 @@ export class ThirdStep extends React.Component {
 
   onGasShareChange = (selected) => {
     if(selected){
-      this.setState({
-        selectedGasShare: selected.value,
-      })
+      this.gasPriceStore.setSelectedGasShare(selected.value)
       this.updateCurrentFee()
     }
   }
@@ -246,7 +249,7 @@ export class ThirdStep extends React.Component {
   }
 
   renderSavingsGasInfo() {
-    const { selectedGasShare, multisendGas, approveGas, transferGas } = this.state
+    const { multisendGas, approveGas, transferGas } = this.state
     const gasPrice = this.gasPriceStore.standardInHex
     const transferEthValue = new BN(gasPrice).times(new BN(this.state.transferGas))
     const displayTransferEthValue = Web3Utils.fromWei(transferEthValue.toString())
@@ -315,7 +318,7 @@ export class ThirdStep extends React.Component {
               <p>Saved Gas Sharing</p>
               <Select.Creatable
                 isLoading={false}
-                value={this.state.selectedGasShare}
+                value={this.gasPriceStore.selectedGasShare}
                 onChange={this.onGasShareChange}
                 loadingPlaceholder=""
                 placeholder="Please select desired gas sharing"
@@ -350,6 +353,7 @@ export class ThirdStep extends React.Component {
               </div>
             </div>
 
+            <Link onClick={this.onPrev} className="button button_prev" to='/1'>Prev</Link>
             <Link onClick={this.onNext} className="button button_next" to='/4'>Next</Link>
           </form>
         </div>

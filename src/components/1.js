@@ -65,17 +65,37 @@ export class FirstStep extends React.Component {
 0x00b5F428905DEA1a67940093fFeaCeee58cA91Ae,1.049
 0x00fC79F38bAf0dE21E1fee5AC4648Bc885c1d774,14546
 `,
-      tokenAddress: {label: '', value: null}
+      tokenAddress: {label: '', value: null},
+      csv: ""
     }
     // this.onSelectFormat = this.onSelectFormat.bind(this)
     this.onParse = this.onParse.bind(this)
     this.parseCompleted = false;
-    this.list = [];
+    // this.list = [];
   }
 
   componentDidMount() {
-    this.tokenStore.reset()
-    this.txStore.reset()
+    // this.tokenStore.reset()
+    // this.txStore.reset()
+
+    if ('' !== this.tokenStore.tokenAddress) {
+      const tokenInfoArray = this.web3Store.userTokens.filter(t => {
+        return t.value === this.tokenStore.tokenAddress
+      })
+      if (tokenInfoArray.length > 0) {
+        const tokenInfo = tokenInfoArray[0]
+        this.setState({tokenAddress: {...tokenInfo}})
+      }
+    }
+
+    if (this.tokenStore.jsonAddresses.length > 0) {
+      const csv = this.tokenStore.jsonAddresses.reduce((csv, v) => {
+        const addresses = Object.keys(v)
+        const val = addresses[0] + "," + v[addresses[0]]
+        return csv + val + "\n"
+      }, "")
+      this.setState({csv: csv})
+    }
   }
   async onTokenAddress(e){
     if(!e){
@@ -180,7 +200,8 @@ export class FirstStep extends React.Component {
   }
 
   onParse(e){
-    this.list = e.target.value;
+    // this.list = e.target.value;
+    this.setState({csv: e.target.value})
     // if(this.state.format === 'json') {
     //   this.onJsonChange(e.target.value)
     // }
@@ -201,7 +222,7 @@ export class FirstStep extends React.Component {
         // if(this.state.format === 'json') {
         //   this.onJsonChange(this.list)
         // } else {
-          await this.onCsvChange(this.list)
+          await this.onCsvChange(this.state.csv)
         // }
       }
       await this.tokenStore.parseAddresses()
@@ -283,6 +304,7 @@ export class FirstStep extends React.Component {
               data-gram
               validations={[required]}
               placeholder={`Example: ${this.state.placeholder}`}
+              value={this.state.csv}
               onBlur={this.onParse} id="addresses-with-balances" className="textarea"></Textarea>
             <Button onClick={this.onSubmit} className="button button_next">Next</Button>
           </Form>

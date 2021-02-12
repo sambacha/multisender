@@ -109,7 +109,7 @@
 .textarea {
   resize: none;
   height: 186px;
-  padding: 10px 20px;
+  padding: 10px 10px;
 }
 
 .label {
@@ -150,7 +150,7 @@
   }
 
   &_next {
-    margin-top: 20px;
+    float: right;
     padding-right: 45px;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAMAAACtdX32AAAAMFBMVEX///////////////////////////////////////////////////////////////9Or7hAAAAAD3RSTlMAPT5BSUpRUt3f5ufp6vUxUI2NAAAAS0lEQVR4AWPABGy8HIwMuAEvPz8fM25pDn688kx8+OWZ6SXPwsWPE/CxMwBlcQMe/NK8DKzc+AzH7zT6yiKiBH+Ekpsc2Hg54YkJAFFVCxvQpdH1AAAAAElFTkSuQmCC);
     background-size: 15px 10px;
@@ -158,7 +158,6 @@
   }
 
   &_prev {
-    margin-top: 20px;
     padding-left: 45px;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAMAAACtdX32AAAAM1BMVEVsb3P///////////////////////////////////////////////////////////////+xgv+bAAAAAXRSTlMAQObYZgAAADxJREFUKM9jYIABTj4GPIBfQIAPr6wAJ15Z/kEpiwNwMzDwCgjgk+fDL43PcB7CThsc8pxkJwcGBi5ssgD2ZQtsy4BYVQAAAABJRU5ErkJggg==);
     background-size: 15px 10px;

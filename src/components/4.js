@@ -61,7 +61,7 @@ export class FourthStep extends React.Component {
 
   renderHomeButton() {
       return (
-        <Link onClick={this.onNext} className="button button_next" to='/'>Home</Link>
+        <Link onClick={this.onNext} className="button button_prev" to='/'>Home</Link>
       )
   }
 

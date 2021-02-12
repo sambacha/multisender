@@ -9,7 +9,7 @@ function add(a, b) {
 }
 class TokenStore {
   @observable decimals = '';
-  @observable jsonAddresses = [{"0x0": "0"}];
+  @observable jsonAddresses = [];
   @observable tokenAddress = '';
   @observable defAccTokenBalance = ''
   @observable allowance = ''
@@ -45,6 +45,9 @@ class TokenStore {
 
   @action
   async getDecimals(address) {
+    if ('' !== this.decimals) {
+      return this.decimals
+    }
     try{
       const web3 = this.web3Store.web3;
       const token = new web3.eth.Contract(ERC20ABI, address);
@@ -105,6 +108,9 @@ class TokenStore {
     }
   }
   async getTokenSymbol(tokenAddress) {
+    if ('' !== this.tokenSymbol) {
+      return this.tokenSymbol
+    }
     try {
       const web3 = this.web3Store.web3;
       const token = new web3.eth.Contract(ERC20ABI, tokenAddress);
@@ -189,6 +195,10 @@ class TokenStore {
     await this.getCurrentFee()
     await this.getEthBalance()
     await this.getArrayLimit()
+    this.decimals = '';
+    this.defAccTokenBalance = ''
+    this.allowance = ''
+    this.tokenSymbol = ''
     if(Web3Utils.isAddress(this.web3Store.defaultAccount) && tokenAddress !== "0x000000000000000000000000000000000000bEEF"){
       this.tokenAddress = tokenAddress;
       await this.getDecimals(tokenAddress)
@@ -215,7 +225,7 @@ class TokenStore {
   @action
   async reset(){
     this.decimals = '';
-    this.jsonAddresses = [{"0x0": "0"}];
+    this.jsonAddresses = [];
     this.tokenAddress = '';
     this.defAccTokenBalance = ''
     this.allowance = ''
