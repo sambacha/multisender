@@ -56,7 +56,6 @@ export class FirstStep extends React.Component {
     this.onTokenAddress = this.onTokenAddress.bind(this);
     this.onDecimalsChange = this.onDecimalsChange.bind(this);
     // this.onJsonChange = this.onJsonChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this.state ={
       format: 'csv',
       placeholder: `
@@ -72,6 +71,8 @@ export class FirstStep extends React.Component {
     this.onParse = this.onParse.bind(this)
     this.parseCompleted = false;
     // this.list = [];
+
+    this.props.addNextHandler(this.onNext)
   }
 
   componentDidMount() {
@@ -210,20 +211,16 @@ export class FirstStep extends React.Component {
     }
     return
   }
-  async onSubmit(e){
-    try {
-      e.preventDefault()
-      if(this.state.format === ''){
-        swal("Error!", "Please select format CSV or JSON", 'error')
-        return
-      }
 
+  onNext = async (wizard) => {
+    console.log(wizard.step)
+    if ("home" !== wizard.step.id) {
+      return
+    }
+
+    try {
       if(!this.parseCompleted){
-        // if(this.state.format === 'json') {
-        //   this.onJsonChange(this.list)
-        // } else {
-          await this.onCsvChange(this.state.csv)
-        // }
+        await this.onCsvChange(this.state.csv)
       }
       await this.tokenStore.parseAddresses()
       console.log('length of addresses', this.tokenStore.jsonAddresses.length)
@@ -241,9 +238,9 @@ export class FirstStep extends React.Component {
           text: JSON.stringify(this.tokenStore.invalid_addresses.slice(), null, '\n'),
           icon: "error",
         })
-      } else {
-        this.props.history.push('/3')
+        return
       }
+      wizard.push("inspect")
     } catch(e) {
       console.error(e)
       swal({
@@ -252,8 +249,8 @@ export class FirstStep extends React.Component {
         icon: "error",
       })
     }
-    return
   }
+
   render () {
     if(this.tokenStore.errors.length > 0){
       swal("Error!", this.tokenStore.errors.toString(), 'error')
@@ -262,8 +259,6 @@ export class FirstStep extends React.Component {
       swal("Error!", this.web3Store.errors.toString(), 'error')
     }
     return (
-      <div className="container container_bg">
-
         <div className="content">
           <div className='sweet-loading'>
           <PulseLoader
@@ -306,10 +301,8 @@ export class FirstStep extends React.Component {
               placeholder={`Example: ${this.state.placeholder}`}
               value={this.state.csv}
               onBlur={this.onParse} id="addresses-with-balances" className="textarea"></Textarea>
-            <Button onClick={this.onSubmit} className="button button_next">Next</Button>
           </Form>
         </div>
-      </div>
     );
   }
 }

@@ -11,20 +11,24 @@ export class FourthStep extends React.Component {
     this.txStore = props.UiStore.txStore;
     this.tokenStore = props.UiStore.tokenStore;
     this.explorerUrl = props.UiStore.web3Store.explorerUrl;
-    this.onNext = this.onNext.bind(this)
     this.intervalId = null
     this.state = {
       txs: this.txStore.txs,
       totalNumberOftx: this.calcTotalNumberOftx(),
     }
     this.doSendExecuted = false
+
+    this.props.addNextHandler(this.onNext)
   }
 
-  onNext(e) {
-    e.preventDefault();
+  onNext = async (wizard) => {
+    console.log(wizard.step)
+    if ("multisend" !== wizard.step.id) {
+      return
+    }
+
     // reload page to make sure that all caches are cleared
     location.reload()
-    // this.props.history.push('/')
   }
 
   componentDidMount(){
@@ -57,12 +61,6 @@ export class FourthStep extends React.Component {
       clearInterval(this.intervalId)
       this.intervalId = null
     }
-  }
-
-  renderHomeButton() {
-      return (
-        <Link onClick={this.onNext} className="button button_prev" to='/'>Home</Link>
-      )
   }
 
   calcTotalNumberOftx() {
@@ -108,7 +106,6 @@ export class FourthStep extends React.Component {
             <div className="table">
               {txHashes}
             </div>
-            { this.renderHomeButton() }
           </form>
         </div>
       </div>

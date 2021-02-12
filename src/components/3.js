@@ -16,8 +16,6 @@ export class ThirdStep extends React.Component {
     this.txStore = props.UiStore.txStore;
     this.gasPriceStore = props.UiStore.gasPriceStore;
     console.log(this.gasPriceStore.gasPricesArray)
-    this.onNext = this.onNext.bind(this)
-    this.onPrev = this.onPrev.bind(this)
     this.state = {
       gasPrice: '',
       transferGas: 0,
@@ -30,6 +28,8 @@ export class ThirdStep extends React.Component {
       {label: '70%', value: '70'},
       {label: '100%', value: '100'},
     ]
+
+    this.props.addNextHandler(this.onNext)
   }
   componentDidMount() {
     if(this.tokenStore.dublicates.length > 0){
@@ -101,43 +101,51 @@ export class ThirdStep extends React.Component {
     this.tokenStore.setCurrentFee(newCurrentFeeRounded.toString(10))
   }
 
-  onPrev(e) {
-    e.preventDefault();
-    this.props.history.push('/1')
-  }
+  onNext = async (wizard) => {
+    console.log(wizard.step)
+    if ("inspect" !== wizard.step.id) {
+      return
+    }
 
-  onNext(e) {
-    e.preventDefault();
-    if (new BN(this.tokenStore.totalBalance).gt(new BN(this.tokenStore.defAccTokenBalance))){
-      console.error('Your balance is less than total to send')
-      swal({
-        title: "Insufficient token balance",
-        text: `You don't have enough tokens to send to all addresses.\nAmount needed: ${this.tokenStore.totalBalance} ${this.tokenStore.tokenSymbol}`,
-        icon: "error",
-      })
-      return
-    }
-    const multisendGasEthValue = this.getMultisendPlusApproveGasEthValue()
-    const ethBalanceWei = Web3Utils.toWei(this.tokenStore.ethBalance, 'ether');
-    if( multisendGasEthValue.gt(new BN(ethBalanceWei))){
-      const displayMultisendGasEthValue = parseFloat(Web3Utils.fromWei(multisendGasEthValue.toString())).toFixed(5)
-      console.error('please fund you account in ')
-      swal({
-        title: "Insufficient ETH balance",
-        text: `You don't have enough ETH to send to all addresses. Amount needed: ${displayMultisendGasEthValue} ETH`,
-        icon: "error",
-      })
-      return
-    }
-    if ("0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress) {
-      // Ether
-      this.props.history.push('/4')
-    } else {
-      if (new BN(this.tokenStore.allowance).gte(new BN(this.tokenStore.totalBalance))){
-        this.props.history.push('/4')
-      } else {
-        this.props.history.push('/approve')
+    try {
+      if (new BN(this.tokenStore.totalBalance).gt(new BN(this.tokenStore.defAccTokenBalance))){
+        console.error('Your balance is less than total to send')
+        swal({
+          title: "Insufficient token balance",
+          text: `You don't have enough tokens to send to all addresses.\nAmount needed: ${this.tokenStore.totalBalance} ${this.tokenStore.tokenSymbol}`,
+          icon: "error",
+        })
+        return
       }
+      const multisendGasEthValue = this.getMultisendPlusApproveGasEthValue()
+      const ethBalanceWei = Web3Utils.toWei(this.tokenStore.ethBalance, 'ether');
+      if( multisendGasEthValue.gt(new BN(ethBalanceWei))){
+        const displayMultisendGasEthValue = parseFloat(Web3Utils.fromWei(multisendGasEthValue.toString())).toFixed(5)
+        console.error('please fund you account in ')
+        swal({
+          title: "Insufficient ETH balance",
+          text: `You don't have enough ETH to send to all addresses. Amount needed: ${displayMultisendGasEthValue} ETH`,
+          icon: "error",
+        })
+        return
+      }
+      if ("0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress) {
+        // Ether
+        wizard.push("multisend")
+      } else {
+        if (new BN(this.tokenStore.allowance).gte(new BN(this.tokenStore.totalBalance))){
+          wizard.push("multisend")
+        } else {
+          wizard.push("approve")
+        }
+      }
+    } catch(e) {
+      console.error(e)
+      swal({
+        title: "Parsing Error",
+        text: e.message,
+        icon: "error",
+      })
     }
   }
 
@@ -352,9 +360,6 @@ export class ThirdStep extends React.Component {
                 { this.renderSavingsGasInfo() }
               </div>
             </div>
-
-            <Link onClick={this.onPrev} className="button button_prev" to='/1'>Prev</Link>
-            <Link onClick={this.onNext} className="button button_next" to='/4'>Next</Link>
           </form>
         </div>
       </div>

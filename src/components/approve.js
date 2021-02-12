@@ -11,11 +11,12 @@ export class ApproveStep extends React.Component {
     this.props = props
     this.txStore = props.UiStore.txStore;
     this.explorerUrl = props.UiStore.web3Store.explorerUrl;
-    this.onNext = this.onNext.bind(this)
     this.intervalId = null
     this.state = {
       txs: this.txStore.txs,
     }
+
+    this.props.addNextHandler(this.onNext)
   }
   componentDidMount(){
     (async () => {
@@ -40,9 +41,13 @@ export class ApproveStep extends React.Component {
     }
   }
 
-  onNext(e) {
-    e.preventDefault();
-    this.props.history.push('/3')
+  onNext = async (wizard) => {
+    console.log(wizard.step)
+    if ("approve" !== wizard.step.id) {
+      return
+    }
+
+    wizard.push("inspect")
   }
 
   render () {
@@ -77,7 +82,6 @@ export class ApproveStep extends React.Component {
             <div className="table">
               {txHashes}
             </div>
-            <Link onClick={this.onNext} className="button button_next" to='/3'>Next</Link>
           </form>
         </div>
       </div>

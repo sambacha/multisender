@@ -66,7 +66,6 @@ strong {
   @extend %container;
 
   &_bg {
-    padding-bottom: 60px;
 
     &:before {
       @include image-2x('../images/illustration@2x.png');
