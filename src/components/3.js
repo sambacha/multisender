@@ -1,11 +1,82 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import ReactJson from 'react-json-view'
 import { inject, observer } from "mobx-react";
 import BN from 'bignumber.js'
 import Web3Utils from 'web3-utils'
 import swal from 'sweetalert';
 import Select from 'react-select';
+import Form from 'react-validation/build/form';
+
+import DataTable, { createTheme } from 'react-data-table-component'
+
+createTheme('solarized', {
+  text: {
+    primary: '#fff',
+    secondary: 'rgb(156, 216, 255)',
+    fontFamily: "monospace",
+  },
+  background: {
+    default: 'rgba(255,255,255,0)',
+  },
+  context: {
+    background: 'rgba(255,255,255,1)',
+    text: '#FFFFFF',
+  },
+  divider: {
+    default: '#073642',
+  },
+  button: {
+    default: 'rgba(156, 216, 255, 1)',
+    focus: 'rgba(156, 216, 255,.8)',
+    hover: 'rgba(156, 216, 255,.8)',
+    disabled: 'rgba(156, 216, 255, .5)',
+  },
+  sortFocus: {
+    default: 'rgba(156, 216, 255, .54)',
+  },
+});
+
+const RecipientsDataTable = (props) => {
+  const columns = [
+    {
+      name: 'Address',
+      selector: 'address',
+      sortable: true,
+      grow: 3.8,
+    },
+    {
+      name: 'Amount, ' + props.tokenSymbol,
+      selector: 'balance',
+      sortable: true,
+      left: true,
+    },
+  ]
+
+  const customStyles = {
+    pagination: {
+      style: {
+        marginBottom: '20px',
+      },
+    },
+    cells: {
+      style: {
+        fontFamily: "monospace",
+      },
+    },
+  }
+
+  return (
+    <DataTable
+      title="List of recipients"
+      columns={columns}
+      theme="solarized"
+      customStyles={customStyles}
+      pagination
+      paginationPerPage={10}
+      data={props.data}
+      paginationTotalRows={props.data.length}
+    />
+  )
+}
 
 @inject("UiStore")
 @observer
@@ -174,8 +245,8 @@ export class ThirdStep extends React.Component {
     }
     return (
       <div className="send-info-i">
-        <p>Your Balance</p>
-        <p className="send-info-amount">{displayValue} {this.tokenStore.tokenSymbol}</p>
+        <p>Balance, {this.tokenStore.tokenSymbol}</p>
+        <p className="send-info-amount">{displayValue}</p>
       </div>
     )
   }
@@ -186,8 +257,8 @@ export class ThirdStep extends React.Component {
     }
     return (
       <div className="send-info-i">
-        <p>Current Allowance</p>
-        <p className="send-info-amount">{this.tokenStore.allowance} {this.tokenStore.tokenSymbol}</p>
+        <p>Allowance, {this.tokenStore.tokenSymbol}</p>
+        <p className="send-info-amount">{this.tokenStore.allowance}</p>
       </div>
     )
   }
@@ -200,23 +271,23 @@ export class ThirdStep extends React.Component {
       // Ether
       return (
         <div className="send-info-i">
-          <p>Gas spent without Multisend</p>
-          <p className="send-info-amount">{displayTransferEthValue} ETH ({this.state.transferGas} GAS)</p>
+          <p>Gas spent without Multisend, ETH</p>
+          <p className="send-info-amount">{displayTransferEthValue}</p>
         </div>
       )
     } else {
       if (new BN(this.tokenStore.allowance).gte(new BN(this.tokenStore.totalBalance))){
         return (
           <div className="send-info-i">
-            <p>Gas spent without Multisend</p>
-            <p className="send-info-amount">{displayTransferEthValue} ETH ({this.state.transferGas} GAS)</p>
+            <p>Gas spent without Multisend, ETH</p>
+            <p className="send-info-amount">{displayTransferEthValue}</p>
           </div>
         )
       } else {
         return (
           <div className="send-info-i">
-            <p>Gas spent without Multisend</p>
-            <p className="send-info-amount">{displayTransferEthValue} ETH ({this.state.transferGas} GAS)</p>
+            <p>Gas spent without Multisend, ETH</p>
+            <p className="send-info-amount">{displayTransferEthValue}</p>
           </div>
         )
       }
@@ -239,19 +310,25 @@ export class ThirdStep extends React.Component {
       // Ether
       return (
         <div className="send-info-i">
-          <p>Gas spent with Multisend</p>
-          <p className="send-info-amount">{displayMultisendGasEthValue} ETH ({approvePlusMultisendGas.toString()} GAS)</p>
+          <p>Gas spent with Multisend, ETH</p>
+          <p className="send-info-amount">{displayMultisendGasEthValue}</p>
         </div>
       )
     } else {
       if (new BN(this.tokenStore.allowance).gte(new BN(this.tokenStore.totalBalance))){
         return (
           <div className="send-info-i">
-            <p>Gas spent with Multisend</p>
-            <p className="send-info-amount">{displayMultisendGasEthValue} ETH ({approvePlusMultisendGas.toString()} GAS)</p>
+            <p>Gas spent with Multisend, ETH</p>
+            <p className="send-info-amount">{displayMultisendGasEthValue}</p>
           </div>
         )
       } else {
+        return (
+          <div className="send-info-i">
+            <p>Gas spent with Multisend, ETH</p>
+            <p className="send-info-amount">N/A</p>
+          </div>
+        )
       }
     }
   }
@@ -277,90 +354,105 @@ export class ThirdStep extends React.Component {
       // Ether
       return (
         <div className="send-info-i">
-          <p>Your gas savings</p>
-          <p className="send-info-amount">{sign}{displaySavedGasEthValue} ETH ({sign}{savedGas.toString()} GAS)</p>
+          <p>Your gas savings, ETH</p>
+          <p className="send-info-amount">{sign}{displaySavedGasEthValue}</p>
         </div>
       )
     } else {
       if (new BN(this.tokenStore.allowance).gte(new BN(this.tokenStore.totalBalance))){
         return (
           <div className="send-info-i">
-            <p>Your gas savings</p>
-            <p className="send-info-amount">{sign}{displaySavedGasEthValue} ETH ({sign}{savedGas.toString()} GAS)</p>
+            <p>Your gas savings, ETH</p>
+            <p className="send-info-amount">{sign}{displaySavedGasEthValue}</p>
           </div>
         )
       } else {
+        return (
+          <div className="send-info-i">
+            <p>Your gas savings, ETH</p>
+            <p className="send-info-amount">N/A</p>
+          </div>
+        )
       }
     }
   }
 
   render() {
     return (
-      <div className="container container_bg">
-        <div className="content">
-          <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
-          <p className="description">
-            Verify addresses and values and choose <strong>Gas Price</strong> and <strong>Gas Sharing</strong> values<br/>
-            <strong>Gas Sharing</strong> is a portion of gas saved by this service that you are OK to tip
-          </p>
-          <form className="form">
-            <ReactJson displayDataTypes={false}
-              style={{backgroundColor: 'none'}}
-              indentWidth="2"
-              iconStyle="square"
-              name={false}
-              theme="solarized"
-              src={this.tokenStore.jsonAddresses.slice()} />
-            <div style={{padding: "25px 0px"}}>
-              <p>Network Speed (Gas Price)</p>
-              <Select.Creatable
-                isLoading={this.gasPriceStore.loading}
-                value={this.gasPriceStore.selectedGasPrice}
-                onChange={this.onGasPriceChange}
-                loadingPlaceholder="Fetching gas Price data ..."
-                placeholder="Please select desired network speed"
-                options={this.gasPriceStore.gasPricesArray.slice()}
-              />
-            </div>
-            <div>
-              <p>Saved Gas Sharing</p>
-              <Select.Creatable
-                isLoading={false}
-                value={this.gasPriceStore.selectedGasShare}
-                onChange={this.onGasShareChange}
-                loadingPlaceholder=""
-                placeholder="Please select desired gas sharing"
-                options={this.gasSharesArray.slice()}
-              />
-            </div>
-            <div className="send-info" style={{padding: "25px 0px"}}>
-              <div className="send-info-side">
-                <div className="send-info-i">
-                  <p>{ "0x000000000000000000000000000000000000bEEF" === this.tokenStore.tokenAddress ? "Total ETH to be Sent" : "Total Tokens to be Sent" }</p>
-                  <p className="send-info-amount">{this.tokenStore.totalBalance} {this.tokenStore.tokenSymbol}</p>
-                </div>
-                {
-                  this.renderTokenBalance()
-                }
-                <div className="send-info-i">
-                  <p>Your ETH Balance</p>
-                  <p className="send-info-amount">{this.tokenStore.ethBalance}</p>
-                </div>
-                { this.renderTransferGasInfo() }
-              </div>
-              <div className="send-info-side">
-                {
-                  this.renderTokenAllowance()
-                }
-                <div className="send-info-i">
-                  <p>Total Number of tx Needed</p>
-                  <p className="send-info-amount">{this.tokenStore.totalNumberTx}</p>
-                </div>
-                { this.renderMultisendGasInfo() }
-                { this.renderSavingsGasInfo() }
+      <div>
+        <div>
+          <div className="description">
+            <ol>
+              <li>Choose <strong>Gas Price</strong></li>
+              <li>Choose <strong>Gas Sharing</strong></li>
+              <li>Verify addresses and values</li>
+              <li>Press the <strong>Next</strong> button</li>
+            </ol>
+            <p>
+              <strong>Gas Sharing</strong> is a portion of gas saved by this service that you are OK to tip
+            </p>
+          </div>
+          <Form className="form">
+            <div className="form-inline">
+              <div className="form-inline-i form-inline-i_gas-price">
+                <label htmlFor="gas-price" className="label">Network Speed (Gas Price)</label>
+                <Select.Creatable
+                  isLoading={this.gasPriceStore.loading}
+                  name="gas-price"
+                  id="gas-price"
+                  value={this.gasPriceStore.selectedGasPrice}
+                  onChange={this.onGasPriceChange}
+                  loadingPlaceholder="Fetching gas Price data ..."
+                  placeholder="Please select desired network speed"
+                  options={this.gasPriceStore.gasPricesArray.slice()}
+                />
               </div>
             </div>
-          </form>
+
+            <div className="form-inline">
+              <div className="form-inline-i form-inline-i_gas-sharing">
+                <label htmlFor="gas-sharing" className="label">Saved Gas Sharing</label>
+                <Select.Creatable
+                  isLoading={false}
+                  name="gas-sharing"
+                  id="gas-sharing"
+                  value={this.gasPriceStore.selectedGasShare}
+                  onChange={this.onGasShareChange}
+                  loadingPlaceholder=""
+                  placeholder="Please select desired gas sharing"
+                  options={this.gasSharesArray.slice()}
+                />
+              </div>
+            </div>
+          </Form>
+          <div className="send-info" style={{padding: "15px 0px"}}>
+            <div className="send-info-side">
+              <div className="send-info-i">
+                <p>Total to be Sent, {this.tokenStore.tokenSymbol}</p>
+                <p className="send-info-amount">{this.tokenStore.totalBalance}</p>
+              </div>
+              {
+                this.renderTokenBalance()
+              }
+              { this.renderTransferGasInfo() }
+              <div className="send-info-i">
+                <p>Total Number of tx Needed</p>
+                <p className="send-info-amount">{this.tokenStore.totalNumberTx}</p>
+              </div>
+            </div>
+            <div className="send-info-side">
+              {
+                this.renderTokenAllowance()
+              }
+              <div className="send-info-i">
+                <p>Balance, ETH</p>
+                <p className="send-info-amount">{this.tokenStore.ethBalance}</p>
+              </div>
+              { this.renderMultisendGasInfo() }
+              { this.renderSavingsGasInfo() }
+            </div>
+          </div>
+          <RecipientsDataTable data={this.tokenStore.addressesData} tokenSymbol={this.tokenStore.tokenSymbol}/>
         </div>
       </div>
     );

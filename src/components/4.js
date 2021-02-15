@@ -1,7 +1,6 @@
 import React from 'react';
 import { inject, observer } from "mobx-react";
 import { Transaction } from "./Transaction"
-import { Link } from 'react-router-dom';
 
 @inject("UiStore")
 @observer
@@ -92,15 +91,33 @@ export class FourthStep extends React.Component {
       }
     } else {
       const txCount = totalNumberOftx - txs.length
-      status = `Please wait...until you sign ${txCount} transactions in Metamask`
+      status = `Waiting for you to sign transaction in Metamask`
+      if (totalNumberOftx > 1) {
+        status = `Waiting for you to sign ${txCount} transactions in Metamask`
+      }
+    }
+    let label = "Sign a multisend transaction in MetaMask"
+    if (totalNumberOftx > 1) {
+      label = `Sign all ${totalNumberOftx} multisend transactions in MetaMask`
+    }
+    let label2 = "to send tokens to many recipients from the Multisend smart contract"
+    if ("ETH" === this.tokenStore.tokenSymbol) {
+      label2 = "to send ETH to many recipients from the Multisend smart contract"
     }
     return (
-      <div className="container container_bg">
-        <div className="content">
-          <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
-          <p className="description">
-            This Dapp supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli
-          </p>
+      <div>
+        <div>
+          <div className="description">
+            <div>
+              {label}<br />{label2}
+            </div>
+            <ol>
+              <li>Confirm all multisend transactions in MetaMask</li>
+              <li>Wait for all transactions to be mined</li>
+              <li>Check transactions on etherscan</li>
+              <li>Press the <strong>Next</strong> button</li>
+            </ol>
+          </div>
           <form className="form">
             <p>{status}</p>
             <div className="table">

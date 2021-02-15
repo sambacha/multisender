@@ -7,6 +7,7 @@ import './assets/stylesheets/application.css';
 import Navigation from './components/Navigation';
 import { Wizard, Steps, Step } from 'react-albus';
 import { Line } from 'rc-progress';
+import { PulseLoader} from 'react-spinners';
 
 
 // const RoutedWizard = ({ children }) =>
@@ -38,8 +39,25 @@ import { Line } from 'rc-progress';
 export class App extends React.Component {
   constructor(props){
     super(props);
+    this.tokenStore = props.UiStore.tokenStore;
     this.web3Store = props.UiStore.web3Store;
     this.nextHandlers = []
+    this.state = {
+      loading: this.web3Store.loading,
+    }
+  }
+
+  componentDidMount() {
+    (async () => {
+      try {
+        await this.tokenStore.proxyMultiSenderAddress()
+        this.setState((state, props) => {
+          return {loading: this.web3Store.loading}
+        })
+      } catch(ex) {
+        console.log("App:", ex)
+      }
+    })()
   }
 
   onNext = (wizard) => {
@@ -59,8 +77,18 @@ export class App extends React.Component {
   }
 
   render(){
-    let startedUrl = this.web3Store.startedUrl;
-    // console.log('fix reset');
+    const { startedUrl } = this.web3Store;
+    if (!(startedUrl === '#/' || startedUrl === '#/home')) {
+      this.web3Store.setStartedUrl('#/')
+      return (
+        <Redirect
+          to={{
+            pathname: "/"
+          }}
+        />
+      )
+    }
+
     return (
       <div>
         <Header />
@@ -71,39 +99,48 @@ export class App extends React.Component {
               onNext={this.onNext}
               render={({ step, steps }) => (
                 <div className="container container_bg">
-                  <Line
-                    percent={(steps.indexOf(step) + 1) / steps.length * 100}
-                    className="pad-b"
-                  />
-                  <TransitionGroup>
-                    <CSSTransition
-                      key={step.id}
-                      classNames="multisend"
-                      timeout={{ enter: 500, exit: 500 }}
-                    >
-                      <Steps key={step.id} step={step}>
-                        <Step id="home">
-                          <FirstStep addNextHandler={this.addNextHandler}/>
-                        </Step>
-                        <Step id="inspect">
-                          <ThirdStep addNextHandler={this.addNextHandler}/>
-                        </Step>
-                        <Step id="approve">
-                          <ApproveStep addNextHandler={this.addNextHandler}/>
-                        </Step>
-                        <Step id="multisend">
-                          <FourthStep addNextHandler={this.addNextHandler}/>
-                        </Step>
-                      </Steps>
-                    </CSSTransition>
-                  </TransitionGroup>
-                  <Navigation />
+                  <div className="content">
+                    <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
+                    <Line
+                      percent={(steps.indexOf(step) + 1) / steps.length * 100}
+                      className="pad-b"
+                    />
+                    <div className='sweet-loading'>
+                      <PulseLoader
+                        color={'#123abc'}
+                        loading={this.state.loading}
+                        />
+                    </div>
+                    <TransitionGroup>
+                      <CSSTransition
+                        key={step.id}
+                        classNames="multisend"
+                        timeout={{ enter: 500, exit: 500 }}
+                      >
+                        <Steps key={step.id} step={step}>
+                          <Step id="home">
+                            <FirstStep addNextHandler={this.addNextHandler}/>
+                          </Step>
+                          <Step id="inspect">
+                            <ThirdStep addNextHandler={this.addNextHandler}/>
+                          </Step>
+                          <Step id="approve">
+                            <ApproveStep addNextHandler={this.addNextHandler}/>
+                          </Step>
+                          <Step id="multisend">
+                            <FourthStep addNextHandler={this.addNextHandler}/>
+                          </Step>
+                        </Steps>
+                      </CSSTransition>
+                    </TransitionGroup>
+                    <Navigation />
+                  </div>
                 </div>
               )}
             />
           )}
         />
       </div>
-    );
+    )
   }
 }

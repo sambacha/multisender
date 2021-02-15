@@ -207,6 +207,7 @@ class TokenStore {
       await this.getTokenSymbol(tokenAddress)
     } else {
       this.tokenAddress = tokenAddress;
+      this.tokenSymbol = "ETH"
       this.decimals = 18;
       this.defAccTokenBalance = this.ethBalance;
     }
@@ -261,7 +262,7 @@ class TokenStore {
           } else {
             let balance = Object.values(account)[0];
             this.totalBalance = new BN(balance).plus(this.totalBalance).toString(10)
-            console.log('balance,', balance)
+            // console.log('balance,', balance)
             balance = this.multiplier.times(balance);
             const indexAddr = this.addresses_to_send.indexOf(address);
             if(indexAddr === -1){
@@ -301,6 +302,14 @@ class TokenStore {
 
   @computed get totalNumberTx() {
     return Math.ceil(this.jsonAddresses.length/this.arrayLimit);
+  }
+
+  @computed get addressesData() {
+    return this.jsonAddresses.map((account) => {
+      const address = Object.keys(account)[0].replace(/\s/g, "");;
+      const balance = Object.values(account)[0];
+      return {address, balance}
+    })
   }
 
   // @computed get totalCostInEth(){

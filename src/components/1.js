@@ -8,7 +8,7 @@ import { inject, observer } from "mobx-react";
 import swal from 'sweetalert';
 import generateElement from '../generateElement'
 import Example from './example.json'
-import { PulseLoader} from 'react-spinners';
+// import { PulseLoader} from 'react-spinners';
 import {RadioGroup, Radio} from 'react-radio-group';
 import csvtojson from 'csvtojson'
 import Select from 'react-select'
@@ -259,48 +259,45 @@ export class FirstStep extends React.Component {
       swal("Error!", this.web3Store.errors.toString(), 'error')
     }
     return (
-        <div className="content">
-          <div className='sweet-loading'>
-          <PulseLoader
-            color={'#123abc'}
-            loading={this.web3Store.loading}
-            />
+        <div>
+          <div className="description">
+            <ol>
+              <li>Select Token Address</li>
+              <li>Enter comma-separated list of addresses and values to send</li>
+              <li>Press the <strong>Next</strong> button</li>
+            </ol>
           </div>
-          <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
-          <p className="description">
-            Please provide Token Address and CSV file with addresses and values to send <br />
-            This Dapp supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli
-          </p>
           <Form className="form">
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_token-address">
                 <label htmlFor="token-address" className="label">Token Address</label>
                 <Select.Creatable
-
-              isLoading={this.web3Store.loading}
-              name="form-field-name"
-              id="token-address"
-              value={this.state.tokenAddress}
-              onChange={this.onTokenAddress}
-              loadingPlaceholder="Loading your token addresses..."
-              placeholder="Please select a token or input the address"
-              options={this.web3Store.userTokens.slice()}
-            />
-
-              </div>
-              <div className="form-inline-i form-inline-i_token-decimals">
-                <label htmlFor="token-decimals" className="label">Decimals</label>
-                <Input disabled={this.web3Store.loading} type="number" validations={[required]} onChange={this.onDecimalsChange} value={this.tokenStore.decimals} className="input" id="token-decimals"/>
+                  isLoading={this.web3Store.loading}
+                  name="token-address"
+                  id="token-address"
+                  value={this.state.tokenAddress}
+                  onChange={this.onTokenAddress}
+                  loadingPlaceholder="Loading your token addresses..."
+                  placeholder="Please select a token or input the address"
+                  options={this.web3Store.userTokens.slice()}
+                />
               </div>
             </div>
 
-            <Textarea
-              disabled={this.web3Store.loading}
-              data-gram
-              validations={[required]}
-              placeholder={`Example: ${this.state.placeholder}`}
-              value={this.state.csv}
-              onBlur={this.onParse} id="addresses-with-balances" className="textarea"></Textarea>
+            <div className="form-inline">
+              <div className="form-inline-i form-inline-i_token-address-values">
+                <label htmlFor="token-address-values" className="label">List of addresses and values</label>
+                <Textarea
+                  disabled={this.web3Store.loading}
+                  name="token-address-values"
+                  id="token-address-values"
+                  data-gram
+                  validations={[required]}
+                  placeholder={`Example: ${this.state.placeholder}`}
+                  value={this.state.csv}
+                  onBlur={this.onParse} id="addresses-with-balances" className="textarea"></Textarea>
+              </div>
+            </div>
           </Form>
         </div>
     );

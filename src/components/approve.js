@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from "mobx-react";
-  import { Link } from 'react-router-dom';
 import { Transaction } from "./Transaction"
 
 @inject("UiStore")
@@ -67,16 +66,21 @@ export class ApproveStep extends React.Component {
         status = "Approve transaction was sent out. Now wait until it is mined"
       }
     } else {
-      status = `Please wait...until you sign transaction in Metamask`
+      status = `Waiting for you to sign an Approve transaction in Metamask`
     }
     return (
-      <div className="container container_bg">
-        <div className="content">
-          <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
-          <p className="description">
-            Please sign an Approve transaction <br />
-            This Dapp supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli
-          </p>
+      <div>
+        <div>
+          <div className="description">
+            <div>
+              Sign an Approve transaction in MetaMask<br />to send tokens to many recipients from the Multisend smart contract
+            </div>
+            <ol>
+              <li>Confirm Approve transaction in MetaMask</li>
+              <li>Wait for the transaction to be mined</li>
+              <li>Press the <strong>Next</strong> button</li>
+            </ol>
+          </div>
           <form className="form">
             <p>{status}</p>
             <div className="table">

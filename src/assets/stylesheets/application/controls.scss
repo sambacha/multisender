@@ -47,7 +47,21 @@
 
     &-i {
       &_token-address {
-        width: 80%;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      &_token-address-values {
+        width: 100%;
+      }
+
+      &_gas-price {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      &_gas-sharing {
+        width: 100%;
       }
 
       &_token-decimals {
