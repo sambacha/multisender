@@ -213,7 +213,7 @@ export class FirstStep extends React.Component {
   }
 
   onNext = async (wizard) => {
-    console.log(wizard.step)
+    // console.log(wizard.step)
     if ("home" !== wizard.step.id) {
       return
     }

@@ -21,7 +21,7 @@ export class FourthStep extends React.Component {
   }
 
   onNext = async (wizard) => {
-    console.log(wizard.step)
+    // console.log(wizard.step)
     if ("multisend" !== wizard.step.id) {
       return
     }

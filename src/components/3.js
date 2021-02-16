@@ -173,7 +173,7 @@ export class ThirdStep extends React.Component {
   }
 
   onNext = async (wizard) => {
-    console.log(wizard.step)
+    // console.log(wizard.step)
     if ("inspect" !== wizard.step.id) {
       return
     }
