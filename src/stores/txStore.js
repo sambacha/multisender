@@ -108,34 +108,31 @@ class TxStore {
     const web3 = this.web3Store.web3;
     const token = new web3.eth.Contract(ERC20ABI, this.tokenStore.tokenAddress);
     let encodedData = await token.methods.approve(await this.tokenStore.proxyMultiSenderAddress(), this.tokenStore.totalBalanceWithDecimals).encodeABI({from: this.web3Store.defaultAccount})
-    let gas = await web3.eth.estimateGas({
+    return web3.eth.estimateGas({
         from: this.web3Store.defaultAccount,
         data: encodedData,
         to: this.tokenStore.tokenAddress,
     })
-    return gas
   }
 
   async _getTransferGas(to, value){
     const web3 = this.web3Store.web3;
     const { tokenAddress } = this.tokenStore
     if(tokenAddress === "0x000000000000000000000000000000000000bEEF"){
-      let gas = await web3.eth.estimateGas({
+      return web3.eth.estimateGas({
           from: this.web3Store.defaultAccount,
           // data: null,
           value: value,
           to: to
       })
-      return gas
     } else {
       const token = new web3.eth.Contract(ERC20ABI, this.tokenStore.tokenAddress);
       const encodedData = await token.methods.transfer(to, value).encodeABI({from: this.web3Store.defaultAccount})
-      const gas = await web3.eth.estimateGas({
+      return await web3.eth.estimateGas({
           from: this.web3Store.defaultAccount,
           data: encodedData,
           to: this.tokenStore.tokenAddress,
       })
-      return gas
     }
   }
 
@@ -176,8 +173,10 @@ class TxStore {
     const multisender = new web3.eth.Contract(MultiSenderAbi, await this.tokenStore.proxyMultiSenderAddress());
 
     if(token_address === "0x000000000000000000000000000000000000bEEF"){
-      let encodedData = await multisender.methods.multiTransfer_OST(addresses_to_send, balances_to_send).encodeABI({from: this.web3Store.defaultAccount})
-      let gas = await web3.eth.estimateGas({
+      const encodedData = await multisender.methods.multiTransfer_OST(addresses_to_send, balances_to_send).encodeABI({from: this.web3Store.defaultAccount})
+      // console.log("web3.eth.estimateGas:", web3.eth.estimateGas)
+      // console.log("web3.eth:", web3.eth)
+      const gas = await web3.eth.estimateGas({
           from: this.web3Store.defaultAccount,
           data: encodedData,
           value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
@@ -185,8 +184,8 @@ class TxStore {
       })
       totalGas += gas
     } else {
-      let encodedData = await multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum).encodeABI({from: this.web3Store.defaultAccount})
-      let gas = await web3.eth.estimateGas({
+      const encodedData = await multisender.methods.multiTransferToken_a4A(token_address, addresses_to_send, balances_to_send, balances_to_send_sum).encodeABI({from: this.web3Store.defaultAccount})
+      const gas = await web3.eth.estimateGas({
           from: this.web3Store.defaultAccount,
           data: encodedData,
           value: Web3Utils.toHex(Web3Utils.toWei(ethValue.toString())),
@@ -248,7 +247,7 @@ class TxStore {
         .once('transactionHash', (hash) => {
           this.txHashToIndex[hash] = this.txs.length
           this.txs.push({status: 'pending', name: `Sending Batch #${this.txs.length} ${this.tokenStore.tokenSymbol}\n
-            From ${addresses_to_send[0]} to: ${addresses_to_send[addresses_to_send.length-1]}
+            From ${addresses_to_send[0].substring(0, 7)} to: ${addresses_to_send[addresses_to_send.length-1].substring(0, 7)}
           `, hash})
         })
         .once('receipt', async (receipt) => {
@@ -280,7 +279,7 @@ class TxStore {
         .once('transactionHash', (hash) => {
           this.txHashToIndex[hash] = this.txs.length
           this.txs.push({status: 'pending', name: `Sending Batch #${this.txs.length} ${this.tokenStore.tokenSymbol}\n
-            From ${addresses_to_send[0]} to: ${addresses_to_send[addresses_to_send.length-1]}
+            From ${addresses_to_send[0].substring(0, 7)} to: ${addresses_to_send[addresses_to_send.length-1].substring(0, 7)}
           `, hash})
         })
         .once('receipt', async (receipt) => {

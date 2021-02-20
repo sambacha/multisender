@@ -6,19 +6,19 @@ const Navigation = () => (
     render={({ next, previous, step, steps, push }) => (
       <div className="multisend-buttons">
         {("home" !== step.id && "multisend" !== step.id) && (
-          <button className="button button_prev" onClick={previous}>
+          <button className="multisend-button multisend-button_prev" onClick={previous}>
             Back
           </button>
         )}
 
         {"multisend" === step.id && (
-          <button className="button button_prev" onClick={next}>
+          <button className="multisend-button multisend-button_prev" onClick={next}>
             Home
           </button>
         )}
 
         {"multisend" !== step.id && (
-          <button className="button button_next" onClick={next}>
+          <button className="multisend-button multisend-button_next" onClick={next}>
             Next
           </button>
         )}

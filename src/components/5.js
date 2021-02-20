@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export class FifthStep extends React.Component {
   render () {
     return (
-      <div className="container container_bg container_opacity">
+      <div className="multisend-container multisend-container_bg container_opacity">
         <div className="content">
           <div className="transactions-title">
             <h1 className="title"><strong>Table Name</strong></h1>

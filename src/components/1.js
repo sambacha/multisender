@@ -270,7 +270,7 @@ export class FirstStep extends React.Component {
           <Form className="form">
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_token-address">
-                <label htmlFor="token-address" className="label">Token Address</label>
+                <label htmlFor="token-address" className="multisend-label">Token Address</label>
                 <Select.Creatable
                   isLoading={this.web3Store.loading}
                   name="token-address"
@@ -286,7 +286,7 @@ export class FirstStep extends React.Component {
 
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_token-address-values">
-                <label htmlFor="token-address-values" className="label">List of addresses and values</label>
+                <label htmlFor="token-address-values" className="multisend-label">List of addresses and values</label>
                 <Textarea
                   disabled={this.web3Store.loading}
                   name="token-address-values"
@@ -295,7 +295,7 @@ export class FirstStep extends React.Component {
                   validations={[required]}
                   placeholder={`Example: ${this.state.placeholder}`}
                   value={this.state.csv}
-                  onBlur={this.onParse} id="addresses-with-balances" className="textarea"></Textarea>
+                  onBlur={this.onParse} id="addresses-with-balances" className="multisend-textarea"></Textarea>
               </div>
             </div>
           </Form>

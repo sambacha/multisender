@@ -75,6 +75,7 @@ export class ApproveStep extends React.Component {
             <div>
               Sign an Approve transaction in MetaMask<br />to send tokens to many recipients from the Multisend smart contract
             </div>
+            <p>&nbsp;</p>
             <ol>
               <li>Confirm Approve transaction in MetaMask</li>
               <li>Wait for the transaction to be mined</li>

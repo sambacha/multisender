@@ -51,6 +51,7 @@ strong {
   line-height: 46px;
   font-size: 32px;
   font-weight: 300;
+  box-sizing: content-box;
 
   @media (max-width: $mobile--width) {
     font-size: 26px;
@@ -62,7 +63,7 @@ strong {
   color: #9cd8ff;
 }
 
-.container {
+.multisend-container {
   @extend %container;
 
   &_bg {

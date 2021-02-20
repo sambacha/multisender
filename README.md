@@ -40,6 +40,12 @@ Example JSON:
 ```
 Example CSV:
 ```csv
+0x476Bb28Bc6D0e9De04dB5E19912C392F9a76535d,0.001
+0x68A2558632D2CF5DC9809Ac7f2771e2Eb722218f,0.002
+0x703f9037088A93853163aEaaEd650f3e66aD7A4e,0.003
+0x651a603a6af9A97ea7b663e3C1CDF2E46e8bd376,0.004
+
+
 0xCBA5018De6b2b6F89d84A1F5A68953f07554765e,12
 0xa6Bf70bd230867c870eF13631D7EFf1AE8Ab85c9,1123.45645
 0x00b5F428905DEA1a67940093fFeaCeee58cA91Ae,1.049
@@ -88,3 +94,9 @@ Any ERC20 tokens you transfer to the Multisender will be sent out to the address
 The smart contract source code can be audited by anyone in this repository.
 
 I encourage you to assess its security before using the Mutlisender Dapp.
+
+# Testing
+
+```
+docker run -dit --name my-apache-app -p 8081:80 -v "$PWD":/usr/local/apache2/htdocs/ -v "$PWD/my-httpd.conf":/usr/local/apache2/conf/httpd.conf httpd:2.4
+```

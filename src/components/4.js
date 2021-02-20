@@ -111,6 +111,7 @@ export class FourthStep extends React.Component {
             <div>
               {label}<br />{label2}
             </div>
+            <p>&nbsp;</p>
             <ol>
               <li>Confirm all multisend transactions in MetaMask</li>
               <li>Wait for all transactions to be mined</li>

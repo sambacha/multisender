@@ -22,17 +22,17 @@ export class Header extends React.Component {
 
     return (
     <header className="header">
-      <div className="container">
+      <div className="multisend-container">
         <a href="#" className="header-logo"></a>
         <form className="form form_header">
           {/* <Link className="button" to='/retry'>Retry Failed Transaction</Link> */}
           <label htmlFor="network"
-              className="label">MultiSender Address: <a target="_blank" href={`${explorerUrl}/address/${this.state.multisenderAddress}`}>
+              className="multisend-label">MultiSender Address: <a target="_blank" href={`${explorerUrl}/address/${this.state.multisenderAddress}`}>
                  {this.state.multisenderAddress}</a>
           </label>
         </form>
       </div>
-      <div className="container">
+      <div className="multisend-container">
         Supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli
       </div>
     </header>

@@ -395,7 +395,7 @@ export class ThirdStep extends React.Component {
           <Form className="form">
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_gas-price">
-                <label htmlFor="gas-price" className="label">Network Speed (Gas Price)</label>
+                <label htmlFor="gas-price" className="multisend-label">Network Speed (Gas Price)</label>
                 <Select.Creatable
                   isLoading={this.gasPriceStore.loading}
                   name="gas-price"
@@ -411,7 +411,7 @@ export class ThirdStep extends React.Component {
 
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_gas-sharing">
-                <label htmlFor="gas-sharing" className="label">Saved Gas Sharing</label>
+                <label htmlFor="gas-sharing" className="multisend-label">Saved Gas Sharing</label>
                 <Select.Creatable
                   isLoading={false}
                   name="gas-sharing"

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export class SecondStep extends React.Component {
   render () {
     return (
-      <div className="container container_bg">
+      <div className="multisend-container multisend-container_bg">
         <div className="content">
           <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
           <p className="description">
@@ -14,21 +14,21 @@ export class SecondStep extends React.Component {
           <form className="form">
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_token-address">
-                <label htmlFor="token-address" className="label">Token Address</label>
+                <label htmlFor="token-address" className="multisend-label">Token Address</label>
                 <input type="text" className="input" id="token-address"/>
               </div>
               <div className="form-inline-i form-inline-i_token-decimals">
-                <label htmlFor="token-decimals" className="label">Token Decimals</label>
+                <label htmlFor="token-decimals" className="multisend-label">Token Decimals</label>
                 <input type="text" className="input" id="token-decimals"/>
               </div>
             </div>
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_balance">
-                <label htmlFor="balance" className="label">Balance</label>
+                <label htmlFor="balance" className="multisend-label">Balance</label>
                 <input type="text" className="input" id="balance"/>
               </div>
               <div className="form-inline-i form-inline-i_balance">
-                <label htmlFor="address-balance" className="label">Address with Balance</label>
+                <label htmlFor="address-balance" className="multisend-label">Address with Balance</label>
                 <input type="text" className="input" id="address-balance"/>
               </div>
               <button type="button" className="button button_add"></button>

@@ -36,10 +36,10 @@ export class Retry extends React.Component {
   }
   render () {
     return (
-      <div className="container container_bg container_opacity">
+      <div className="multisend-container multisend-container_bg container_opacity">
         <div className="content">
           <div className="table">
-            <label htmlFor="txhash" className="label">Transaction Hash</label>
+            <label htmlFor="txhash" className="multisend-label">Transaction Hash</label>
             <input onChange={this.onTxInput} type="text" className="input" id="txhash"/>
             <div className="table-tr table-tr_title">
               <div className="table-td">Token Name</div>

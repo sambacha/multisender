@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export class Welcome extends React.Component {
   render () {
     return (
-      <div className="container container_bg">
+      <div className="multisend-container multisend-container_bg">
         <div className="content">
           <h1 className="title"><strong>Welcome to Token</strong> MultiSender</h1>
           <p className="description">
