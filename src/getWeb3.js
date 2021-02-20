@@ -85,6 +85,11 @@ let getWeb3 = () => {
                 reject({message: 'Please unlock your metamask and refresh the page'})
                 return
               }
+              if (web3.eth.estimateGas.__proto__ && web3.eth.estimateGas.__proto__.call) {
+                console.log("typeof web3.eth.estimateGas.__proto__.call:", typeof web3.eth.estimateGas.__proto__.call)
+                web3.eth.estimateGas.call = web3.eth.estimateGas.__proto__.call
+                console.log("typeof web3.eth.estimateGas.call:", typeof web3.eth.estimateGas.call)
+              }
               const results = {
                 web3Instance: web3,
                 netIdName,
