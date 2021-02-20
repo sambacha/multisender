@@ -55,7 +55,7 @@ class Web3Store {
       if ('mainnet' !== blockchain_network) {
           api_suffix = '-' + blockchain_network
       }
-      const etherscanApiKey = "Z1JE9T4P4NYHXD54JU9DGCH81DMGPUGMR9"
+      const etherscanApiKey = process.env["REACT_APP_PROXY_MULTISENDER_ETHERSCAN_API_KEY"]
       window.fetch(
         `https://api${api_suffix}.etherscan.io/api?module=account&action=tokentx&address=${defaultAccount}&startblock=0&endblock=999999999&sort=desc&apikey=${etherscanApiKey}`
       ).then((res) => {
