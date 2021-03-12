@@ -52,7 +52,11 @@ export class FourthStep extends React.Component {
     let totalNumberOftx;
     
     if(Number(this.tokenStore.totalBalance) > Number(this.tokenStore.allowance)){
+      if(Number(this.tokenStore.allowance) != 0){
+        totalNumberOftx = Number(this.totalNumberTx) + 2;
+      }else{
       totalNumberOftx = Number(this.totalNumberTx) + 1;
+      }
     } else {
       totalNumberOftx = Number(this.totalNumberTx)
     }

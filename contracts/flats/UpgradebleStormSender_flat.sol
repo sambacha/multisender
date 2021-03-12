@@ -281,7 +281,7 @@ contract ERC20 is ERC20Basic {
 }
 
 
-contract UpgradebleStormSender is OwnedUpgradeabilityStorage, Claimable {
+contract UpgradebleStormSender2019_v4 is OwnedUpgradeabilityStorage, Claimable {
     using SafeMath for uint256;
 
     event Multisended(uint256 total, address tokenAddress);
@@ -301,7 +301,7 @@ contract UpgradebleStormSender is OwnedUpgradeabilityStorage, Claimable {
         setOwner(_owner);
         setArrayLimit(200);
         setDiscountStep(0.00005 ether);
-        setFee(0.05 ether);
+        setFee(0.0001 ether);
         boolStorage[keccak256("rs_multisender_initialized")] = true;
     }
 
