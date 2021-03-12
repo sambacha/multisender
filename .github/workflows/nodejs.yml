@@ -23,5 +23,6 @@ jobs:
           npm install
           npm run build
           npm run test
+          cd contracts/ && npm install && npx truffle compile
         env:
           CI: true
