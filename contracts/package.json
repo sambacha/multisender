@@ -13,8 +13,8 @@
     "truffle": "^4.1.7"
   },
   "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.2.4",
     "dotenv": "^4.0.0",
     "truffle-flattener": "^1.2.3",
-    "truffle-hdwallet-provider": "0.0.3"
   }
 }
