@@ -13,6 +13,10 @@
     "truffle": "^4.1.7"
   },
   "devDependencies": {
-    "truffle-flattener": "^1.2.3"
+    "babel-polyfill": "^6.23.0",
+    "babel-register": "^6.23.0",
+    "dotenv": "^4.0.0",
+    "truffle-flattener": "^1.2.3",
+    "truffle-hdwallet-provider": "0.0.3"
   }
 }
