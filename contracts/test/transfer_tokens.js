@@ -1,16 +1,10 @@
 const UpgradebleStormSender = artifacts.require("UpgradebleStormSender");
+const inchTestsToken = artifacts.require("inchTestsToken");
 
 const toWei = (i) => web3.utils.toWei(new web3.utils.BN(i), 'ether');
 const fromWei = (i) => web3.utils.fromWei(new web3.utils.BN(i), 'ether');
 
 contract("UpgradebleStormSender", accounts => {
-    before(async () => {
-        // initialize contract
-        const contract = await UpgradebleStormSender.deployed();
-        const CONTRACT_OWNER = accounts[0];
-        await contract.initialize(CONTRACT_OWNER);
-    });
-
     it("should send ether to multiple accounts", async () => {
         const contract = await UpgradebleStormSender.deployed();
 
