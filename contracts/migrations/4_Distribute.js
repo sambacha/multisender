@@ -1,4 +1,4 @@
-module.exports = function (deployer, network, accounts) {
+module.exports = async function (deployer, network, accounts) {
     if (network !== "mainnet") {
         const sender = await UpgradebleStormSender.deployed();
         const token = await inchTestsToken.deployed();
