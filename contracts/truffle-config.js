@@ -23,6 +23,17 @@ module.exports = {
       skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
       networkCheckTimeout: 100000, // to fix timeout errors
     },
+    mainnet: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`),
+      gas: 5000000,
+      gasPrice: 5e9,
+
+      network_id: 1,       // eslint-disable-line camelcase
+      // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+      // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      // skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
+      // networkCheckTimeout: 100000, // to fix timeout errors
+    },
   },
 
   compilers: {
