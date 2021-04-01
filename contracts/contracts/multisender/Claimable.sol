@@ -5,7 +5,6 @@ pragma solidity 0.4.26;
 import "./Ownable.sol";
 import "../EternalStorage.sol";
 
-
 /**
  * @title Claimable
  * @dev Extension for the Ownable contract, where the ownership needs to be claimed.
@@ -17,28 +16,30 @@ contract Claimable is EternalStorage, Ownable {
     }
 
     /**
-    * @dev Modifier throws if called by any account other than the pendingOwner.
-    */
+     * @dev Modifier throws if called by any account other than the pendingOwner.
+     */
     modifier onlyPendingOwner() {
         require(msg.sender == pendingOwner());
         _;
     }
 
     /**
-    * @dev Allows the current owner to set the pendingOwner address.
-    * @param newOwner The address to transfer ownership to.
-    */
+     * @dev Allows the current owner to set the pendingOwner address.
+     * @param newOwner The address to transfer ownership to.
+     */
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
         addressStorage[keccak256("pendingOwner")] = newOwner;
     }
 
     /**
-    * @dev Allows the pendingOwner address to finalize the transfer.
-    */
+     * @dev Allows the pendingOwner address to finalize the transfer.
+     */
     function claimOwnership() public onlyPendingOwner {
         OwnershipTransferred(owner(), pendingOwner());
-        addressStorage[keccak256("owner")] = addressStorage[keccak256("pendingOwner")];
+        addressStorage[keccak256("owner")] = addressStorage[
+            keccak256("pendingOwner")
+        ];
         addressStorage[keccak256("pendingOwner")] = address(0);
     }
 }
