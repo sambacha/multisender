@@ -4,7 +4,8 @@
   "description": "mulitsender contracts",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "flatten": " ./node_modules/.bin/poa-solidity-flattener $PWD/contracts/multisender/UpgradebleStormSender.sol",
+  "compile": "npx truffle compile"
   },
   "author": "sam",
   "license": "MIT",
@@ -16,5 +17,9 @@
     "solhint-plugin-prettier": "^0.0.5",
     "solidity-coverage": "^0.7.16",
     "truffle": "^5.3.0"
+  },
+  "dependencies": {
+    "@poanet/solidity-flattener": "^3.0.6",
+    "solc": "^0.4.26"
   }
 }
