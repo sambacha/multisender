@@ -14,9 +14,9 @@ contract EternalStorage {
   mapping(bytes32 => bool) internal boolStorage;
   mapping(bytes32 => int256) internal intStorage;
 }
+
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
-
 
 /**
  * @title UpgradeabilityOwnerStorage
@@ -41,9 +41,9 @@ contract UpgradeabilityOwnerStorage {
     _upgradeabilityOwner = newUpgradeabilityOwner;
   }
 }
+
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
-
 
 /**
  * @title UpgradeabilityStorage
@@ -72,17 +72,12 @@ contract UpgradeabilityStorage {
     return _implementation;
   }
 }
-// Roman Storm Multi Sender
-// To Use this Dapp: https://rstormsf.github.io/multisender
-
 
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
 
-
-
-
-
+// Roman Storm Multi Sender
+// To Use this Dapp: https://rstormsf.github.io/multisender
 
 /**
  * @title OwnedUpgradeabilityStorage
@@ -100,12 +95,8 @@ contract OwnedUpgradeabilityStorage is
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
 
-
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
-
-
-
 
 /**
  * @title Ownable
@@ -153,8 +144,6 @@ contract Ownable is EternalStorage {
   }
 }
 
-
-
 /**
  * @title Claimable
  * @dev Extension for the Ownable contract, where the ownership needs to be claimed.
@@ -196,7 +185,6 @@ contract Claimable is EternalStorage, Ownable {
 
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
-
 
 /**
  * @title SafeMath
@@ -242,7 +230,6 @@ library SafeMath {
     return c;
   }
 }
-
 
 /**
  * @title ERC20Basic
@@ -350,6 +337,3 @@ contract UpgradebleStormSender is OwnedUpgradeabilityStorage, Claimable {
     emit ClaimedTokens(_token, owner(), balance);
   }
 }
-
-
-
