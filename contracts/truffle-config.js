@@ -26,7 +26,7 @@ module.exports = {
     mainnet: {
       provider: () => new HDWalletProvider(process.env.MNEMONIC, `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`),
       gas: 5000000,
-      gasPrice: 5e9,
+      gasPrice: 135e9,
 
       network_id: 1,       // eslint-disable-line camelcase
       // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
