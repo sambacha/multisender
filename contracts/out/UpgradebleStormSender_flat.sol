@@ -2,6 +2,7 @@
 // To Use this Dapp: https://rstormsf.github.io/multisender
 pragma solidity 0.4.26;
 
+
 /**
  * @title EternalStorage
  * @dev This contract holds all the necessary state variables to carry out the storage of any contract.
@@ -17,6 +18,7 @@ contract EternalStorage {
 
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
+
 
 /**
  * @title UpgradeabilityOwnerStorage
@@ -44,6 +46,7 @@ contract UpgradeabilityOwnerStorage {
 
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
+
 
 /**
  * @title UpgradeabilityStorage
@@ -79,6 +82,7 @@ contract UpgradeabilityStorage {
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
 
+
 /**
  * @title OwnedUpgradeabilityStorage
  * @dev This is the storage necessary to perform upgradeable contracts.
@@ -97,6 +101,7 @@ contract OwnedUpgradeabilityStorage is
 
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
+
 
 /**
  * @title Ownable
@@ -144,6 +149,7 @@ contract Ownable is EternalStorage {
   }
 }
 
+
 /**
  * @title Claimable
  * @dev Extension for the Ownable contract, where the ownership needs to be claimed.
@@ -185,6 +191,7 @@ contract Claimable is EternalStorage, Ownable {
 
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
+
 
 /**
  * @title SafeMath
@@ -231,6 +238,7 @@ library SafeMath {
   }
 }
 
+
 /**
  * @title ERC20Basic
  * @dev Simpler version of ERC20 interface
@@ -245,6 +253,7 @@ contract ERC20Basic {
 
   event Transfer(address indexed from, address indexed to, uint256 value);
 }
+
 
 contract ERC20 is ERC20Basic {
   function allowance(address owner, address spender)
@@ -262,6 +271,7 @@ contract ERC20 is ERC20Basic {
 
   event Approval(address indexed owner, address indexed spender, uint256 value);
 }
+
 
 contract UpgradebleStormSender is OwnedUpgradeabilityStorage, Claimable {
   using SafeMath for uint256;
