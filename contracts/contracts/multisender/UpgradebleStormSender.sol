@@ -1,5 +1,51 @@
-// Roman Storm Multi Sender
-// To Use this Dapp: https://rstormsf.github.io/multisender
+//▄▄▄▄      ▄▄▄▄▄▄▄▄▄▄▄  ▄▄        ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄        ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄        ▄
+//▄█░░░░▌    ▐░░░░░░░░░░░▌▐░░▌      ▐░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░▌      ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌      ▐░▌
+//▐░░▌▐░░▌     ▀▀▀▀█░█▀▀▀▀ ▐░▌░▌     ▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░▌       ▐░▌     ▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌     ▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌     ▐░▌
+//▀▀ ▐░░▌         ▐░▌     ▐░▌▐░▌    ▐░▌▐░▌          ▐░▌       ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌▐░▌    ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌▐░▌    ▐░▌
+//▐░░▌         ▐░▌     ▐░▌ ▐░▌   ▐░▌▐░▌          ▐░█▄▄▄▄▄▄▄█░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░▌ ▐░▌   ▐░▌▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌ ▐░▌   ▐░▌
+//▐░░▌         ▐░▌     ▐░▌  ▐░▌  ▐░▌▐░▌          ▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌
+//▐░░▌         ▐░▌     ▐░▌   ▐░▌ ▐░▌▐░▌          ▐░█▀▀▀▀▀▀▀█░▌     ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌   ▐░▌ ▐░▌▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌   ▐░▌ ▐░▌
+//▐░░▌         ▐░▌     ▐░▌    ▐░▌▐░▌▐░▌          ▐░▌       ▐░▌     ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌    ▐░▌▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌    ▐░▌▐░▌
+//▄▄▄▄█░░█▄▄▄  ▄▄▄▄█░█▄▄▄▄ ▐░▌     ▐░▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌     ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌     ▐░▐░▌▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌     ▐░▐░▌
+//▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌      ▐░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌      ▐░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌      ▐░░▌
+//▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀        ▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀            ▀         ▀  ▀         ▀  ▀        ▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀        ▀▀
+//
+//▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄
+//▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░▌       ▐░▌
+//▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀  ▀▀▀▀█░█▀▀▀▀      ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌
+//▐░▌       ▐░▌▐░▌          ▐░▌               ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌
+//▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄▄▄      ▐░▌          ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌
+//▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌          ▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+//▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀      ▐░▌          ▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀█░█▀▀▀▀
+//▐░▌       ▐░▌▐░▌          ▐░▌               ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌
+//▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌           ▄▄▄▄█░█▄▄▄▄      ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌     ▐░▌
+//▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░▌          ▐░░░░░░░░░░░▌     ▐░░░░░░░░░░▌ ▐░▌       ▐░▌     ▐░▌
+//▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀  ▀            ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀   ▀         ▀       ▀
+//
+//▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄    ▄  ▄         ▄  ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄        ▄  ▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄
+//▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌     ▐░░▌     ▐░░░░░░░░░░░▌▐░▌  ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░▌      ▐░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+//▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌     ▐░█▀▀▀▀▀▀▀▀▀ ▐░▌ ▐░▌ ▐░▌       ▐░▌▐░▌       ▐░▌ ▀▀▀▀█░█▀▀▀▀ ▐░▌░▌     ▐░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌
+//▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌     ▐░▌          ▐░▌▐░▌  ▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌     ▐░▌▐░▌    ▐░▌▐░▌       ▐░▌▐░▌          ▐░▌       ▐░▌
+//▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌ ▐░▐░▌ ▐░▌     ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌░▌   ▐░█▄▄▄▄▄▄▄█░▌▐░▌   ▄   ▐░▌     ▐░▌     ▐░▌ ▐░▌   ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌
+//▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌  ▐░▌  ▐░▌     ▐░░░░░░░░░░░▌▐░░▌    ▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌     ▐░▌     ▐░▌  ▐░▌  ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+//▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀█░█▀▀ ▐░▌       ▐░▌▐░▌   ▀   ▐░▌      ▀▀▀▀▀▀▀▀▀█░▌▐░▌░▌    ▀▀▀▀█░█▀▀▀▀ ▐░▌ ▐░▌░▌ ▐░▌     ▐░▌     ▐░▌   ▐░▌ ▐░▌▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀█░█▀▀
+//▐░▌          ▐░▌     ▐░▌  ▐░▌       ▐░▌▐░▌       ▐░▌               ▐░▌▐░▌▐░▌       ▐░▌     ▐░▌▐░▌ ▐░▌▐░▌     ▐░▌     ▐░▌    ▐░▌▐░▌▐░▌       ▐░▌▐░▌          ▐░▌     ▐░▌
+//▐░▌          ▐░▌      ▐░▌ ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌      ▄▄▄▄▄▄▄▄▄█░▌▐░▌ ▐░▌      ▐░▌     ▐░▌░▌   ▐░▐░▌ ▄▄▄▄█░█▄▄▄▄ ▐░▌     ▐░▐░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌
+//▐░▌          ▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░░░░░░░░░░░▌▐░▌  ▐░▌     ▐░▌     ▐░░▌     ▐░░▌▐░░░░░░░░░░░▌▐░▌      ▐░░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░▌       ▐░▌
+//▀            ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀▀▀▀▀▀▀▀▀▀▀  ▀    ▀       ▀       ▀▀       ▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀        ▀▀  ▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀
+//
+//▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄          ▄  ▄▄▄▄▄▄▄▄▄▄▄
+//▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌        ▐░▌▐░░░░░░░░░░░▌
+//▐░▌       ▐░▌ ▀▀▀▀█░█▀▀▀▀  ▀▀▀▀█░█▀▀▀▀ ▐░▌       ▐░▌       ▐░▌  ▀▀▀▀▀▀▀▀▀█░▌
+//▐░▌       ▐░▌     ▐░▌          ▐░▌     ▐░▌       ▐░▌      ▐░▌            ▐░▌
+//▐░▌   ▄   ▐░▌     ▐░▌          ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌     ▐░▌    ▄▄▄▄▄▄▄▄▄█░▌
+//▐░▌  ▐░▌  ▐░▌     ▐░▌          ▐░▌     ▐░░░░░░░░░░░▌     ▐░▌   ▐░░░░░░░░░░░▌
+//▐░▌ ▐░▌░▌ ▐░▌     ▐░▌          ▐░▌     ▐░█▀▀▀▀▀▀▀█░▌     ▐░▌    ▀▀▀▀▀▀▀▀▀█░▌
+//▐░▌▐░▌ ▐░▌▐░▌     ▐░▌          ▐░▌     ▐░▌       ▐░▌      ▐░▌            ▐░▌
+//▐░▌░▌   ▐░▐░▌ ▄▄▄▄█░█▄▄▄▄      ▐░▌     ▐░▌       ▐░▌       ▐░▌  ▄▄▄▄▄▄▄▄▄█░▌
+//▐░░▌     ▐░░▌▐░░░░░░░░░░░▌     ▐░▌     ▐░▌       ▐░▌        ▐░▌▐░░░░░░░░░░░▌
+//▀▀       ▀▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀       ▀         ▀           ▀ ▀▀▀▀▀▀▀▀▀▀▀
+
 pragma solidity 0.4.23;
 
 import "../OwnedUpgradeabilityStorage.sol";
@@ -33,30 +79,17 @@ contract UpgradebleStormSender is OwnedUpgradeabilityStorage, Claimable {
     event Multisended(uint256 total, address tokenAddress);
     event ClaimedTokens(address token, address owner, uint256 balance);
 
-    modifier hasFee() {
-        if (currentFee(msg.sender) > 0) {
-            require(msg.value >= currentFee(msg.sender));
-        }
-        _;
-    }
-
     function() public payable {}
 
     function initialize(address _owner) public {
         require(!initialized());
         setOwner(_owner);
         setArrayLimit(200);
-        setDiscountStep(0.00005 ether);
-        setFee(0.05 ether);
         boolStorage[keccak256("rs_multisender_initialized")] = true;
     }
 
     function initialized() public view returns (bool) {
         return boolStorage[keccak256("rs_multisender_initialized")];
-    }
- 
-    function txCount(address customer) public view returns(uint256) {
-        return uintStorage[keccak256("txCount", customer)];
     }
 
     function arrayLimit() public view returns(uint256) {
@@ -68,38 +101,7 @@ contract UpgradebleStormSender is OwnedUpgradeabilityStorage, Claimable {
         uintStorage[keccak256("arrayLimit")] = _newLimit;
     }
 
-    function discountStep() public view returns(uint256) {
-        return uintStorage[keccak256("discountStep")];
-    }
-
-    function setDiscountStep(uint256 _newStep) public onlyOwner {
-        require(_newStep != 0);
-        uintStorage[keccak256("discountStep")] = _newStep;
-    }
-
-    function fee() public view returns(uint256) {
-        return uintStorage[keccak256("fee")];
-    }
-
-    function currentFee(address _customer) public view returns(uint256) {
-        if (fee() > discountRate(msg.sender)) {
-            return fee().sub(discountRate(_customer));
-        } else {
-            return 0;
-        }
-    }
-
-    function setFee(uint256 _newStep) public onlyOwner {
-        require(_newStep != 0);
-        uintStorage[keccak256("fee")] = _newStep;
-    }
-
-    function discountRate(address _customer) public view returns(uint256) {
-        uint256 count = txCount(_customer);
-        return count.mul(discountStep());
-    }
-
-    function multisendToken(address token, address[] _contributors, uint256[] _balances) public hasFee payable {
+    function multisendToken(address token, address[] _contributors, uint256[] _balances) public payable {
         if (token == 0x000000000000000000000000000000000000bEEF){
             multisendEther(_contributors, _balances);
         } else {
@@ -111,24 +113,19 @@ contract UpgradebleStormSender is OwnedUpgradeabilityStorage, Claimable {
                 erc20token.transferFrom(msg.sender, _contributors[i], _balances[i]);
                 total += _balances[i];
             }
-            setTxCount(msg.sender, txCount(msg.sender).add(1));
             Multisended(total, token);
         }
     }
 
     function multisendEther(address[] _contributors, uint256[] _balances) public payable {
         uint256 total = msg.value;
-        uint256 fee = currentFee(msg.sender);
-        require(total >= fee);
         require(_contributors.length <= arrayLimit());
-        total = total.sub(fee);
         uint256 i = 0;
         for (i; i < _contributors.length; i++) {
             require(total >= _balances[i]);
             total = total.sub(_balances[i]);
             _contributors[i].transfer(_balances[i]);
         }
-        setTxCount(msg.sender, txCount(msg.sender).add(1));
         Multisended(msg.value, 0x000000000000000000000000000000000000bEEF);
     }
 
@@ -142,9 +139,4 @@ contract UpgradebleStormSender is OwnedUpgradeabilityStorage, Claimable {
         erc20token.transfer(owner(), balance);
         ClaimedTokens(_token, owner(), balance);
     }
-    
-    function setTxCount(address customer, uint256 _txCount) private {
-        uintStorage[keccak256("txCount", customer)] = _txCount;
-    }
-
 }
