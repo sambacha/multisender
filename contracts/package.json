@@ -1,18 +1,17 @@
 {
-  "name": "contracts",
-  "version": "1.0.0",
-  "description": "",
+  "name": "multisender-contracts",
+  "version": "0.1.0",
+  "description": "mulitsender contracts",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "flatten": "truffle-flattener UpgradebleStormSender.sol > flats/UpgradebleStormSender_flat.sol"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "truffle": "^4.1.7"
-  },
+  "author": "sam",
+  "license": "MIT",
   "devDependencies": {
-    "truffle-flattener": "^1.2.3"
+    "ethlint": "^1.2.5",
+    "prettier": "^2.2.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.6",
+    "truffle": "^5.3.0"
   }
 }

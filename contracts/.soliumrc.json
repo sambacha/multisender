@@ -1,0 +1,15 @@
+{
+    "rules": {
+        "function-order": [
+            "error",
+            {
+                "ignore": {
+                    "constructorFunc": true,
+                    "fallbackFunc": true,
+                    "functions": ["foo", "myFunc"],
+                    "visibilities": ["private"]
+                }
+            }
+        ]
+    }
+}

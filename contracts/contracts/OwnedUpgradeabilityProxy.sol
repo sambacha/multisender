@@ -1,6 +1,6 @@
 // Roman Storm Multi Sender
 // To Use this Dapp: https://rstormsf.github.io/multisender
-pragma solidity 0.4.23;
+pragma solidity 0.4.26;
 
 import "./UpgradeabilityProxy.sol";
 import "./UpgradeabilityOwnerStorage.sol";
