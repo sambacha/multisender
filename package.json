@@ -37,7 +37,7 @@
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-app-rewired eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build -o rstorm"
+    "deploy": "gh-pages -d build -o sambacha"
   },
   "resolutions": {
     "eth-lib": "git+https://github.com/sambacha/eth-lib"
