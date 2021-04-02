@@ -5,7 +5,7 @@
   "homepage": "https://rstormsf.github.io/multisender",
   "dependencies": {
     "bignumber.js": "^6.0.0",
-    "csvtojson": "^1.1.9",
+    "csvtojson": "^1.1.12",
     "gh-pages": "^1.1.0",
     "json-validator": "0.0.34",
     "mobx": "^3.5.1",
@@ -27,7 +27,7 @@
     "splash-screen": "^4.0.1",
     "store2": "^2.7.0",
     "sweetalert": "^2.1.0",
-    "web3": "^1.0.0-beta.30"
+    "web3": "^1.0.0-beta.55"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/assets/stylesheets/application.scss -o src/assets/stylesheets --output-style=compressed",
