@@ -1,25 +1,9 @@
 [build]
   base = "."
   publish = "public/"
-  command = "npm install && npm run-script build-css && npm run-script build"
+  command = "export CI=''NODE_ENV=production npm install && npm run-script build"
 #  functions = "project/functions/" // TODO: LAMBDA FUNCTIONS
 
-  [build.processing]
-    skip_processing = false
-  [build.processing.css]
-    bundle = true
-    minify = true
-  [build.processing.js]
-    bundle = true
-    minify = true
-  [build.processing.html]
-    pretty_urls = true
-  [build.processing.images]
-    compress = true
-    
-[[plugins]]
-  package = "netlify-plugin-gatsby-cache"
-  
  [headers]
 # Define which paths this specific [[headers]] block will cover.
   for = "/*"
