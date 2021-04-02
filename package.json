@@ -41,5 +41,8 @@
   },
   "resolutions": {
     "eth-lib": "git+https://github.com/sambacha/eth-lib"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1"
   }
 }
