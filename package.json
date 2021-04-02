@@ -12,6 +12,7 @@
     "mobx-react": "^4.4.2",
     "node-sass-chokidar": "0.0.3",
     "nodemon": "^1.15.1",
+    "prettier-standard": "^16.4.1",
     "react": "^16.2.0",
     "react-app-rewire-mobx": "^1.0.7",
     "react-app-rewire-preact": "^1.0.1",
@@ -32,6 +33,7 @@
   "scripts": {
     "build-css": "node-sass-chokidar src/assets/stylesheets/application.scss -o src/assets/stylesheets --output-style=compressed",
     "watch-css": "nodemon -e scss -x \"npm run build-css\"",
+    "fmt": "prettier-standard --lint '**/*.{js,css}'",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",

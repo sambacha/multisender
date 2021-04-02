@@ -11,7 +11,7 @@ class TxStore {
   @observable txs = [];
   txHashToIndex = {};
   @observable approval = '';
-  constructor(rootStore) {
+  constructor (rootStore) {
     this.tokenStore = rootStore.tokenStore;
     this.web3Store = rootStore.web3Store;
     this.gasPriceStore = rootStore.gasPriceStore;
@@ -19,7 +19,7 @@ class TxStore {
   }
 
   @action
-  async reset() {
+  async reset () {
     this.txs = [];
     this.txHashToIndex = {};
     this.approval = '';
@@ -28,7 +28,7 @@ class TxStore {
   }
 
   @action
-  async doSend() {
+  async doSend () {
     this.keepRunning = true;
     this.txs = [];
     this.approval = '';
@@ -43,7 +43,7 @@ class TxStore {
           index,
           this.approval,
           this.txHashToIndex,
-          toJS(this.txs),
+          toJS(this.txs)
         );
         if (this.approval) {
           if (this.txs[index] && this.txs[index].status === 'mined') {
@@ -51,7 +51,7 @@ class TxStore {
             console.log(
               'lets GO!',
               this.tokenStore.totalNumberTx,
-              this.tokenStore.arrayLimit,
+              this.tokenStore.arrayLimit
             );
             setTimeout(() => {
               this._multisend({
@@ -71,14 +71,14 @@ class TxStore {
     }
   }
 
-  async _approve() {
+  async _approve () {
     const index = this.txs.length;
     const web3 = this.web3Store.web3;
     const token = new web3.eth.Contract(ERC20ABI, this.tokenStore.tokenAddress);
     try {
       return token.methods['approve(address,uint256)'](
         this.tokenStore.proxyMultiSenderAddress,
-        this.tokenStore.totalBalanceWithDecimals,
+        this.tokenStore.totalBalanceWithDecimals
       )
         .send({
           from: this.web3Store.defaultAccount,
@@ -103,7 +103,7 @@ class TxStore {
     }
   }
 
-  async _multisend({ slice, addPerTx }) {
+  async _multisend ({ slice, addPerTx }) {
     if (!this.keepRunning) {
       return;
     }
@@ -135,12 +135,12 @@ class TxStore {
       slice,
       addresses_to_send[0],
       balances_to_send[0],
-      addPerTx,
+      addPerTx
     );
     const web3 = this.web3Store.web3;
     const multisender = new web3.eth.Contract(
       MultiSenderAbi,
-      proxyMultiSenderAddress,
+      proxyMultiSenderAddress
     );
 
     try {
@@ -192,7 +192,7 @@ class TxStore {
     }
   }
 
-  async getTxReceipt(hash) {
+  async getTxReceipt (hash) {
     console.log('getTxReceipt');
     try {
       const web3 = this.web3Store.web3;
@@ -203,7 +203,7 @@ class TxStore {
     }
   }
 
-  async getTxStatus(hash) {
+  async getTxStatus (hash) {
     console.log('GET TX STATUS', hash);
     if (!this.keepRunning) {
       return;

@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 @inject('UiStore')
 @observer
 export class Header extends React.Component {
-  render() {
+  render () {
     const explorerUrl =
       this.props.UiStore.web3Store.explorerUrl || 'https://etherscan.io';
 

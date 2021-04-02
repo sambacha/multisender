@@ -7,7 +7,7 @@ import generateElement from '../generateElement';
 @inject('UiStore')
 @observer
 export class Retry extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.onTxInput = this.onTxInput.bind(this);
     this.txStore = props.UiStore.txStore;
@@ -17,7 +17,7 @@ export class Retry extends React.Component {
     };
   }
 
-  onTxInput(e) {
+  onTxInput (e) {
     const txHash = e.target.value;
     setTimeout(async () => {
       if (txHash.length === 66) {
@@ -33,7 +33,7 @@ export class Retry extends React.Component {
       }
     }, 750);
   }
-  render() {
+  render () {
     return (
       <div className="container container_bg container_opacity">
         <div className="content">

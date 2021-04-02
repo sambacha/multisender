@@ -9,7 +9,7 @@ import Select from 'react-select';
 @inject('UiStore')
 @observer
 export class ThirdStep extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.tokenStore = props.UiStore.tokenStore;
     this.gasPriceStore = props.UiStore.gasPriceStore;
@@ -19,24 +19,24 @@ export class ThirdStep extends React.Component {
       gasPrice: '',
     };
   }
-  componentDidMount() {
+  componentDidMount () {
     if (this.tokenStore.dublicates.length > 0) {
       swal({
         title: `There were duplicated eth addresses in your list.`,
         text: `${JSON.stringify(
           this.tokenStore.dublicates.slice(),
           null,
-          '\n',
+          '\n'
         )}.\n Multisender already combined the balances for those addreses. Please make sure it did the calculation correctly.`,
         icon: 'warning',
       });
     }
   }
-  onNext(e) {
+  onNext (e) {
     e.preventDefault();
     if (
       new BN(this.tokenStore.totalBalance).gt(
-        new BN(this.tokenStore.defAccTokenBalance),
+        new BN(this.tokenStore.defAccTokenBalance)
       )
     ) {
       console.error('Your balance is more than total to send');
@@ -49,7 +49,7 @@ export class ThirdStep extends React.Component {
     }
     if (
       new BN(this.tokenStore.totalCostInEth).gt(
-        new BN(this.tokenStore.ethBalance),
+        new BN(this.tokenStore.ethBalance)
       )
     ) {
       console.error('please fund you account in ');
@@ -68,7 +68,7 @@ export class ThirdStep extends React.Component {
       this.gasPriceStore.setSelectedGasPrice(selected.value);
     }
   };
-  render() {
+  render () {
     return (
       <div className="container container_bg">
         <div className="content">

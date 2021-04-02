@@ -53,7 +53,7 @@ const isJson = (value) => {
 @inject('UiStore')
 @observer
 export class FirstStep extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.tokenStore = props.UiStore.tokenStore;
     this.txStore = props.UiStore.txStore;
@@ -74,11 +74,11 @@ export class FirstStep extends React.Component {
     this.list = [];
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.tokenStore.reset();
     this.txStore.reset();
   }
-  async onTokenAddress(e) {
+  async onTokenAddress (e) {
     if (!e) {
       this.setState({ tokenAddress: { label: '', value: '' } });
       return;
@@ -89,7 +89,7 @@ export class FirstStep extends React.Component {
       this.setState({ tokenAddress: { label: e.label, value: e.value } });
     }
   }
-  onSelectFormat(newFormat) {
+  onSelectFormat (newFormat) {
     this.parseCompleted = false;
     if (newFormat === 'csv') {
       this.setState({
@@ -110,7 +110,7 @@ export class FirstStep extends React.Component {
 0x00b5F428905DEA1a67940093fFeaCeee58cA91Ae,1.049
 0x00fC79F38bAf0dE21E1fee5AC4648Bc885c1d774,14546
     `,
-        'info',
+        'info'
       );
     } else {
       this.setState({
@@ -135,11 +135,11 @@ export class FirstStep extends React.Component {
       });
     }
   }
-  onDecimalsChange(e) {
+  onDecimalsChange (e) {
     this.tokenStore.setDecimals(e.target.value);
   }
 
-  onJsonChange(value) {
+  onJsonChange (value) {
     try {
       let addresses = JSON.parse(value);
       this.tokenStore.setJsonAddresses(addresses);
@@ -152,14 +152,14 @@ export class FirstStep extends React.Component {
       console.error(error);
       swal({
         content: generateElement(
-          `${error} Please visit <a target="_blank" href="https://jsonlint.com">JsonLint.com</a>`,
+          `${error} Please visit <a target="_blank" href="https://jsonlint.com">JsonLint.com</a>`
         ),
         icon: 'error',
       });
     }
   }
 
-  async onCsvChange(value) {
+  async onCsvChange (value) {
     return new Promise((res, rej) => {
       let addresses = [];
       csvtojson({ noheader: true })
@@ -194,7 +194,7 @@ export class FirstStep extends React.Component {
     });
   }
 
-  onParse(e) {
+  onParse (e) {
     this.list = e.target.value;
     if (this.state.format === 'json') {
       this.onJsonChange(e.target.value);
@@ -204,7 +204,7 @@ export class FirstStep extends React.Component {
     }
     return;
   }
-  async onSubmit(e) {
+  async onSubmit (e) {
     try {
       e.preventDefault();
       if (this.state.format === '') {
@@ -237,7 +237,7 @@ export class FirstStep extends React.Component {
           text: JSON.stringify(
             this.tokenStore.invalid_addresses.slice(),
             null,
-            '\n',
+            '\n'
           ),
           icon: 'error',
         });
@@ -254,7 +254,7 @@ export class FirstStep extends React.Component {
     }
     return;
   }
-  render() {
+  render () {
     if (this.tokenStore.errors.length > 0) {
       swal('Error!', this.tokenStore.errors.toString(), 'error');
     }

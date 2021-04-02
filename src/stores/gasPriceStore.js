@@ -12,11 +12,11 @@ class GasPriceStore {
   ];
   @observable selectedGasPrice = '22';
   gasPricePromise = null;
-  constructor(rootStore) {
+  constructor (rootStore) {
     this.getGasPrices();
   }
 
-  async getGasPrices() {
+  async getGasPrices () {
     this.gasPricePromise = fetch('https://gasprice.poa.network/')
       .then((response) => {
         return response.json();
@@ -37,12 +37,12 @@ class GasPriceStore {
       });
   }
 
-  @computed get standardInHex() {
+  @computed get standardInHex () {
     const toWei = Web3Utils.toWei(this.selectedGasPrice.toString(), 'gwei');
     return Web3Utils.toHex(toWei);
   }
   @action
-  setSelectedGasPrice(value) {
+  setSelectedGasPrice (value) {
     this.selectedGasPrice = value;
   }
 }

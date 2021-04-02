@@ -32,11 +32,11 @@ const PrivateRoute = ({ component: Component, startedUrl, ...rest }) => (
 
 @inject('UiStore')
 export class App extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.web3Store = props.UiStore.web3Store;
   }
-  render() {
+  render () {
     let startedUrl = this.web3Store.startedUrl;
     console.log('fix reset');
     return (

@@ -10,7 +10,7 @@ class Web3Store {
   @observable userTokens = [];
   @observable explorerUrl = '';
   @observable startedUrl = window.location.hash;
-  constructor(rootStore) {
+  constructor (rootStore) {
     this.getWeb3Promise = getWeb3()
       .then(async (web3Config) => {
         const { web3Instance, defaultAccount } = web3Config;
@@ -26,17 +26,17 @@ class Web3Store {
       });
   }
   @action
-  setExplorerUrl(url) {
+  setExplorerUrl (url) {
     this.explorerUrl = url;
   }
   @action
-  setStartedUrl(url) {
+  setStartedUrl (url) {
     this.startedUrl = url;
   }
-  async getUserTokens({ trustApiName, defaultAccount }) {
+  async getUserTokens ({ trustApiName, defaultAccount }) {
     window
       .fetch(
-        `https://${trustApiName}.trustwalletapp.com/tokens?address=${defaultAccount}`,
+        `https://${trustApiName}.trustwalletapp.com/tokens?address=${defaultAccount}`
       )
       .then((res) => {
         return res.json();

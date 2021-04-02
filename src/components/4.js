@@ -33,7 +33,7 @@ const Transaction = (tx) => {
 @inject('UiStore')
 @observer
 export class FourthStep extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.txStore = props.UiStore.txStore;
     this.tokenStore = props.UiStore.tokenStore;
@@ -44,14 +44,14 @@ export class FourthStep extends React.Component {
       txCount: Number(this.totalNumberTx),
     };
   }
-  componentDidMount() {
+  componentDidMount () {
     try {
       this.txStore.doSend();
     } catch (e) {
       console.log('FROM UI', e);
     }
   }
-  render() {
+  render () {
     let totalNumberOftx;
 
     if (

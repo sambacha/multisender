@@ -4,7 +4,7 @@ import GasPriceStore from './gasPriceStore';
 import TxStore from './txStore';
 
 class UiStore {
-  constructor() {
+  constructor () {
     this.gasPriceStore = new GasPriceStore();
     this.web3Store = new Web3Store(this);
     this.tokenStore = new TokenStore(this);

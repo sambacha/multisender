@@ -4,7 +4,7 @@ import StormMultiSenderABI from '../abis/StormMultisender';
 import Web3Utils from 'web3-utils';
 
 const BN = require('bignumber.js');
-function add(a, b) {
+function add (a, b) {
   return new BN(a).plus(new BN(b));
 }
 class TokenStore {
@@ -26,13 +26,13 @@ class TokenStore {
   @observable dublicates = [];
   proxyMultiSenderAddress = process.env.REACT_APP_PROXY_MULTISENDER;
 
-  constructor(rootStore) {
+  constructor (rootStore) {
     this.web3Store = rootStore.web3Store;
     this.gasPriceStore = rootStore.gasPriceStore;
   }
 
   @action
-  async getDecimals(address) {
+  async getDecimals (address) {
     try {
       const web3 = this.web3Store.web3;
       const token = new web3.eth.Contract(ERC20ABI, address);
@@ -40,13 +40,13 @@ class TokenStore {
       return this.decimals;
     } catch (e) {
       this.errors.push(
-        'Cannot get decimals for token contract.\n Please make sure you are on the right network and token address exists',
+        'Cannot get decimals for token contract.\n Please make sure you are on the right network and token address exists'
       );
       console.error('Get Decimals', e);
     }
   }
 
-  async getBalance() {
+  async getBalance () {
     try {
       const web3 = this.web3Store.web3;
       const token = new web3.eth.Contract(ERC20ABI, this.tokenAddress);
@@ -59,12 +59,12 @@ class TokenStore {
       return this.defAccTokenBalance;
     } catch (e) {
       this.errors.push(
-        `${this.web3Store.defaultAccount} doesn't have token balance.\n Please make sure you are on the right network and token address exists`,
+        `${this.web3Store.defaultAccount} doesn't have token balance.\n Please make sure you are on the right network and token address exists`
       );
       console.error('getBalance', e);
     }
   }
-  async getEthBalance() {
+  async getEthBalance () {
     try {
       const web3 = this.web3Store.web3;
       let ethBalance = await web3.eth.getBalance(this.web3Store.defaultAccount);
@@ -75,7 +75,7 @@ class TokenStore {
       console.error(e);
     }
   }
-  async getTokenSymbol(tokenAddress) {
+  async getTokenSymbol (tokenAddress) {
     try {
       const web3 = this.web3Store.web3;
       const token = new web3.eth.Contract(ERC20ABI, tokenAddress);
@@ -83,13 +83,13 @@ class TokenStore {
       return this.tokenSymbol;
     } catch (e) {
       this.errors.push(
-        'Token with this Address doesnt exist.\n Please make sure you are on the right network and token address exists',
+        'Token with this Address doesnt exist.\n Please make sure you are on the right network and token address exists'
       );
       console.error(e);
     }
   }
   @action
-  async getAllowance() {
+  async getAllowance () {
     try {
       const web3 = this.web3Store.web3;
       const token = new web3.eth.Contract(ERC20ABI, this.tokenAddress);
@@ -107,13 +107,13 @@ class TokenStore {
   }
 
   @action
-  async getCurrentFee() {
+  async getCurrentFee () {
     try {
       this.web3Store.getWeb3Promise.then(async () => {
         const web3 = this.web3Store.web3;
         const multisender = new web3.eth.Contract(
           StormMultiSenderABI,
-          this.proxyMultiSenderAddress,
+          this.proxyMultiSenderAddress
         );
         const currentFee = await multisender.methods
           .currentFee(this.web3Store.defaultAccount)
@@ -126,13 +126,13 @@ class TokenStore {
     }
   }
 
-  async getArrayLimit() {
+  async getArrayLimit () {
     try {
       await this.web3Store.getWeb3Promise.then(async () => {
         const web3 = this.web3Store.web3;
         const multisender = new web3.eth.Contract(
           StormMultiSenderABI,
-          this.proxyMultiSenderAddress,
+          this.proxyMultiSenderAddress
         );
         this.arrayLimit = await multisender.methods.arrayLimit().call();
         return this.arrayLimit;
@@ -143,7 +143,7 @@ class TokenStore {
   }
 
   @action
-  async setTokenAddress(tokenAddress) {
+  async setTokenAddress (tokenAddress) {
     await this.web3Store.getWeb3Promise.then(async () => {
       if (
         Web3Utils.isAddress(this.web3Store.defaultAccount) &&
@@ -169,17 +169,17 @@ class TokenStore {
   }
 
   @action
-  setDecimals(decimals) {
+  setDecimals (decimals) {
     this.decimals = decimals;
   }
 
   @action
-  setJsonAddresses(addresses) {
+  setJsonAddresses (addresses) {
     this.jsonAddresses = addresses;
   }
 
   @action
-  async reset() {
+  async reset () {
     this.decimals = '';
     this.jsonAddresses = [{ '0x0': '0' }];
     this.tokenAddress = '';
@@ -199,7 +199,7 @@ class TokenStore {
   }
 
   @action
-  async parseAddresses() {
+  async parseAddresses () {
     this.addresses_to_send = [];
     this.dublicates = [];
     this.totalBalance = 0;
@@ -211,7 +211,7 @@ class TokenStore {
           if (Object.keys(account).length === 0) {
             rej({
               message: `There was an error parsing ${JSON.stringify(
-                account,
+                account
               )} at line ${index}`,
             });
           }
@@ -234,7 +234,7 @@ class TokenStore {
                 this.dublicates.push(address);
               }
               this.balances_to_send[indexAddr] = new BN(
-                this.balances_to_send[indexAddr],
+                this.balances_to_send[indexAddr]
               )
                 .plus(balance)
                 .toString(10);
@@ -261,22 +261,22 @@ class TokenStore {
     });
   }
 
-  @computed get totalBalanceWithDecimals() {
+  @computed get totalBalanceWithDecimals () {
     return new BN(this.totalBalance).times(this.multiplier).toString(10);
   }
-  @computed get multiplier() {
+  @computed get multiplier () {
     const decimals = Number(this.decimals);
     return new BN(10).pow(decimals);
   }
 
-  @computed get totalNumberTx() {
+  @computed get totalNumberTx () {
     return Math.ceil(this.jsonAddresses.length / this.arrayLimit);
   }
 
-  @computed get totalCostInEth() {
+  @computed get totalCostInEth () {
     const standardGasPrice = Web3Utils.toWei(
       this.gasPriceStore.selectedGasPrice.toString(),
-      'gwei',
+      'gwei'
     );
     const currentFeeInWei = Web3Utils.toWei(this.currentFee);
     const tx = new BN(standardGasPrice).times(new BN('5000000'));
