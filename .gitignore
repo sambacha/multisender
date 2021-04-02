@@ -1,6 +1,5 @@
 node_modules
-.env
+#.env
 build
-.gitsecret/keys/random_seed
 .DS_Store
 
