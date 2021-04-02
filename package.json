@@ -2,10 +2,10 @@
   "name": "multi-sender-app",
   "version": "0.1.0",
   "license": "GPL3",
-  "homepage": "https://rstormsf.github.io/multisender",
+  "homepage": "https://sambacha.github.io/multisender",
   "dependencies": {
     "bignumber.js": "^6.0.0",
-    "csvtojson": "^1.1.9",
+    "csvtojson": "^1.1.12",
     "gh-pages": "^1.1.0",
     "json-validator": "0.0.34",
     "mobx": "^3.5.1",
@@ -25,9 +25,9 @@
     "react-spinners": "^0.2.6",
     "react-validation": "^3.0.7",
     "splash-screen": "^4.0.1",
-    "store2": "^2.7.0",
+    "store2": "^2.12.0",
     "sweetalert": "^2.1.0",
-    "web3": "^1.0.0-beta.30"
+    "web3": "^1.0.0-beta.36"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/assets/stylesheets/application.scss -o src/assets/stylesheets --output-style=compressed",
@@ -37,6 +37,9 @@
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-app-rewired eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build -o rstorm"
+    "deploy": "gh-pages -d build -o sambacha"
+  },
+  "resolutions": {
+    "eth-lib": "git+https://github.com/sambacha/eth-lib"
   }
 }
