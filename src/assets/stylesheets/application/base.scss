@@ -1,6 +1,9 @@
 html,
 body,
-p, h1, h2, h3 {
+p,
+h1,
+h2,
+h3 {
   margin: 0;
   padding: 0;
   font-weight: normal;
@@ -67,7 +70,6 @@ strong {
   @extend %container;
 
   &_bg {
-
     &:before {
       @include image-2x('../images/illustration@2x.png');
       content: '';
