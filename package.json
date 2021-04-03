@@ -44,6 +44,7 @@
     "eth-lib": "git+https://github.com/sambacha/eth-lib"
   },
   "devDependencies": {
+    "netlify": "^6.1.16",
     "prettier": "^2.2.1"
   }
 }

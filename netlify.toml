@@ -1,6 +1,6 @@
 [build]
   base = "."
-  publish = "public/"
+  publish = "build/"
   command = "export CI=''NODE_ENV=production npm install && npm run-script build"
 #  functions = "project/functions/" // TODO: LAMBDA FUNCTIONS
 
