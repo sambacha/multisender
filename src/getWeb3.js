@@ -9,7 +9,8 @@ let getWeb3 = () => {
       // Checking if Web3 has been injected by the browser (Mist/MetaMask)
       if (typeof web3 !== 'undefined') {
         // Use Mist/MetaMask's provider.
-        web3 = new window.Web3(web3.currentProvider);
+        window.ethereum.enable();
+        web3 = new window.Web3(window.ethereum)
         web3.version.getNetwork((err, netId) => {
           let netIdName, trustApiName, explorerUrl;
           console.log('netId', netId);
