@@ -24,4 +24,4 @@ jobs:
           npm run build
           npm run test
         env:
-          CI: true
+          CI: false
