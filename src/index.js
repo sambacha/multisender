@@ -12,4 +12,4 @@ const Root = (
     </HashRouter>
   </Provider>
 );
-ReactDOM.render(Root, document.getElementById('root'));
+ReactDOM.render(Root, document.getElementById('wp-multisender-container'));

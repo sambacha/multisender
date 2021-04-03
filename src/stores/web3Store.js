@@ -1,28 +1,17 @@
 import { action, observable } from "mobx";
 import getWeb3 from '../getWeb3';
 import Web3 from 'web3';
+
 class Web3Store {
   @observable web3 = {};
   @observable defaultAccount = '';
-  getWeb3Promise = null;
   @observable loading = true;
   @observable errors = [];
   @observable userTokens = [];
   @observable explorerUrl = '';
   @observable startedUrl = window.location.hash
   constructor(rootStore) {
-    
-    this.getWeb3Promise = getWeb3().then(async (web3Config) => {
-      const {web3Instance, defaultAccount} = web3Config;
-      this.defaultAccount = defaultAccount;
-      this.web3 = new Web3(web3Instance.currentProvider); 
-      this.getUserTokens(web3Config)
-      this.setExplorerUrl(web3Config.explorerUrl)
-      console.log('web3 loaded')
-    }).catch((e) => {
-      console.error(e,'web3 not loaded')
-      this.errors.push(e.message)
-    })
+    this.userTokensInitialized = false
   }
   @action
   setExplorerUrl(url){
@@ -32,26 +21,96 @@ class Web3Store {
   setStartedUrl(url){
     this.startedUrl = url;
   }
-  async getUserTokens({trustApiName, defaultAccount}) {
-    window.fetch(`https://${trustApiName}.trustwalletapp.com/tokens?address=${defaultAccount}`).then((res) => {
-      return res.json()
-    }).then((res) => {
-      let tokens = res.docs.map(({contract}) => {
-        const {address, symbol} = contract;
-        return {label: `${symbol} - ${address}`, value: address}
-      })
-      tokens.unshift({
-        value: '0x000000000000000000000000000000000000bEEF',
-        label: "ETH - Ethereum Native Currency"
-      })
-      this.userTokens = tokens;
-      this.loading = false;
+
+  async getWeb3Promise() {
+    return getWeb3().then(async (web3Config) => {
+      if ('' !== this.explorerUrl) {
+        return this
+      }
+      const {web3Instance, defaultAccount, netId, netIdName} = web3Config;
+      this.defaultAccount = defaultAccount;
+      // this.web3 = new Web3(web3Instance.currentProvider);
+      this.web3 = web3Instance;
+      this.netId = netId;
+      this.netIdName = netIdName;
+      await this.getUserTokens(web3Config)
+      this.setExplorerUrl(web3Config.explorerUrl)
+      console.log('web3 loaded')
+      return this
     }).catch((e) => {
-      this.loading = false;
-      console.error(e);
+      console.error(e,'web3 not loaded')
+      this.errors.push(e.message)
+      throw e
     })
   }
 
+  async getUserTokens({trustApiName, defaultAccount}) {
+    return new Promise((resolve, reject) => {
+      if (this.userTokensInitialized) {
+        resolve(this)
+        return
+      }
+      const blockchain_network = this.netIdName.toLowerCase()
+      let api_suffix = '';
+      if ('mainnet' !== blockchain_network) {
+          api_suffix = '-' + blockchain_network
+      }
+      const etherscanApiKey = process.env["REACT_APP_PROXY_MULTISENDER_ETHERSCAN_API_KEY"]
+      window.fetch(
+        `https://api${api_suffix}.etherscan.io/api?module=account&action=tokentx&address=${defaultAccount}&startblock=0&endblock=999999999&sort=desc&apikey=${etherscanApiKey}`
+      ).then((res) => {
+        return res.json()
+      }).then((res) => {
+        if (!(res.result && (typeof res.result === "object") && res.result.hasOwnProperty("length"))) {
+          this.loading = false;
+          reject("Failed to load user tokens. Try again a minute later please.")
+          return
+        }
+        let tokens = res.result.filter(tx => {
+          if (!tx.hasOwnProperty("to") || tx["to"].toLowerCase() != defaultAccount.toLowerCase()) {
+            return false
+          }
+          if (!tx.hasOwnProperty("contractAddress")) {
+            return false
+          }
+          if (!tx.hasOwnProperty("tokenName")) {
+            return false
+          }
+          if (!tx.hasOwnProperty("tokenSymbol")) {
+            return false
+          }
+          if (!tx.hasOwnProperty("tokenDecimal")) {
+            return false
+          }
+          return true
+        }).map(tx => {
+          const tokenAddress = tx["contractAddress"];
+          const tokenName = tx["tokenName"];
+          const tokenSymbol = tx["tokenSymbol"];
+          const tokenDecimal = tx["tokenDecimal"];
+          return {label: `${tokenSymbol} - ${tokenAddress}`, value: tokenAddress, tokenSymbol}
+        })
+        let tokensUniqueObj = {}
+        for (let i = 0; i < tokens.length; i++) {
+          let token = tokens[i]
+          tokensUniqueObj[token.value] = token
+        }
+        let tokensUnique = Object.keys(tokensUniqueObj).map(tokenAddress => tokensUniqueObj[tokenAddress])
+        tokensUnique.unshift({
+          value: '0x000000000000000000000000000000000000bEEF',
+          label: "ETH - Ethereum Native Currency"
+        })
+        this.userTokens = tokensUnique;
+        this.userTokensInitialized = true
+        this.loading = false;
+        resolve(this)
+      }).catch((e) => {
+        this.loading = false;
+        console.error(e);
+        reject(e)
+      })
+    })
+  }
 }
 
 export default Web3Store;
