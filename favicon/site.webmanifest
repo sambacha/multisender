@@ -1,15 +1,10 @@
 {
-    "name": "Token MultiSender",
-    "short_name": "Save on tx fees with ERC20 MultiSender",
+    "name": "BatchTxSender",
+    "short_name": "BatchTxSender",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/android-chrome-256x256.png",
-            "sizes": "256x256",
+            "src": "/favicon/android-chrome-144x144.png",
+            "sizes": "144x144",
             "type": "image/png"
         }
     ],
