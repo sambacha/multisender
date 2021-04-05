@@ -27,7 +27,7 @@ export class Header extends React.Component {
           <form className="form form_header">
             {/* <Link className="button" to='/retry'>Retry Failed Transaction</Link> */}
             <label htmlFor="network" className="multisend-label">
-              MultiSender Address:{' '}
+              Contract Address:{' '}
               <a
                 target="_blank"
                 href={`${explorerUrl}/address/${this.state.multisenderAddress}`}
@@ -38,7 +38,7 @@ export class Header extends React.Component {
           </form>
         </div>
         <div className="multisend-container">
-          Supports Mainnet, Ropsten, Rinkeby, Kovan, Goerli
+          Supports Ethereum Mainnet 
         </div>
       </header>
     );

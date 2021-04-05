@@ -7,18 +7,16 @@ export class SecondStep extends React.Component {
       <div className="multisend-container multisend-container_bg">
         <div className="content">
           <h1 className="title">
-            <strong>Welcome to Token</strong> MultiSender
+            <strong>Welcome to Transaction</strong> MultiSender
           </h1>
           <p className="description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore <a href="#">et dolore magna</a>{' '}
-            aliqua.
+            Ethereum Multi Transaction Sender 
           </p>
           <form className="form">
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_token-address">
                 <label htmlFor="token-address" className="multisend-label">
-                  Token Address
+                  Address
                 </label>
                 <input type="text" className="input" id="token-address" />
               </div>
